@@ -84,6 +84,14 @@ def wrap_message(
 def valid_citations(evidence_pack: Dict[str, Any]) -> set:
     return {item["citation_id"] for item in evidence_pack["evidence_items"]}
 
+def create_initial_case_state(
+    evidence_pack: Dict[str, Any] = sample_evidence_pack,
+) -> Dict[str, Any]:
+    return {
+        "case_id": evidence_pack["case_id"],
+        "ticker": evidence_pack["ticker"],
+        "evidence_pack": evidence_pack,
+    }
 
 def run_bull_agent(evidence_pack: Dict[str, Any]) -> Dict[str, Any]:
     return {
@@ -408,14 +416,46 @@ def run_agent(agent_name: str, case_state: Dict[str, Any]) -> Dict[str, Any]:
         )
     raise ValueError(f"Unknown agent name: {agent_name}")
 
+def handle_band_message(
+    message: Dict[str, Any],
+    case_state: Dict[str, Any],
+) -> Dict[str, Any]:
+    """
+    Lightweight adapter for future Band integration.
+
+    This does not call the real Band SDK yet.
+    It maps Band-style incoming messages to the local AI Core agent runner.
+    """
+
+    target_agent = message.get("to_agent")
+    message_type = message.get("message_type")
+
+    if target_agent == "BullAgent":
+        if message_type == "revision_request":
+            if "evaluation_output" not in case_state:
+                case_state["evaluation_output"] = message.get("payload", {})
+            return run_agent("bull_revision", case_state)
+
+        return run_agent("bull", case_state)
+
+    if target_agent == "BearAgent":
+        return run_agent("bear", case_state)
+
+    if target_agent == "RiskAgent":
+        return run_agent("risk", case_state)
+
+    if target_agent == "EvaluatorAgent":
+        return run_agent("evaluator", case_state)
+
+    if target_agent == "MemoAgent":
+        return run_agent("memo", case_state)
+
+    raise ValueError(f"Unsupported or missing target agent: {target_agent}")
+
 def run_full_research_case() -> Dict[str, Any]:
     room = MockBandRoom("local-bandalpha-demo")
 
-    case_state = {
-        "case_id": sample_evidence_pack["case_id"],
-        "ticker": sample_evidence_pack["ticker"],
-        "evidence_pack": sample_evidence_pack,
-    }
+    case_state = create_initial_case_state(sample_evidence_pack)
 
     room.send_message(
         wrap_message(

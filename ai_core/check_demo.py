@@ -1,7 +1,10 @@
 from typing import Any, List
 
-from ai_core.run_demo import run_full_research_case, valid_citations
-
+from ai_core.run_demo import (
+    run_full_research_case,
+    valid_citations,
+    handle_band_message,
+)
 
 def collect_citation_ids(obj: Any) -> List[str]:
     citation_ids = []
@@ -60,12 +63,26 @@ def main():
     assert final_memo["disclaimer"] == "This is a research support memo, not investment advice."
 
     assert invalid_citation_ids == []
+    
+    adapter_response = handle_band_message(
+        {
+            "to_agent": "BullAgent",
+            "message_type": "revision_request",
+            "payload": case_state["evaluation_output"],
+        },
+        case_state,
+    )
+
+    assert adapter_response["from_agent"] == "BullAgent"
+    assert adapter_response["message_type"] == "agent_result"
+    assert "revision_note" in adapter_response["payload"]
 
     print("\n=== CHECKS PASSED ===")
     print("Initial revision required: True")
     print("After revision required: False")
     print("Final memo generated: True")
     print("All citation IDs are valid: True")
+    print("Band adapter revision routing works: True")
 
 
 if __name__ == "__main__":
