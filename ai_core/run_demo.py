@@ -408,8 +408,7 @@ def run_agent(agent_name: str, case_state: Dict[str, Any]) -> Dict[str, Any]:
         )
     raise ValueError(f"Unknown agent name: {agent_name}")
 
-
-def main():
+def run_full_research_case() -> Dict[str, Any]:
     room = MockBandRoom("local-bandalpha-demo")
 
     case_state = {
@@ -437,13 +436,14 @@ def main():
     risk_msg = run_agent("risk", case_state)
     room.send_message(risk_msg)
     case_state["risk_output"] = risk_msg["payload"]
-    
+
     evaluator_msg = run_agent("evaluator", case_state)
     room.send_message(evaluator_msg)
     case_state["evaluation_output"] = evaluator_msg["payload"]
 
     if case_state["evaluation_output"]["revision_required"]:
         print("\n=== Revision Loop Triggered ===")
+
         revision_msg = run_agent("bull_revision", case_state)
         room.send_message(revision_msg)
         case_state["bull_output_v2"] = revision_msg["payload"]
@@ -451,12 +451,12 @@ def main():
         case_state_for_v2 = {
             **case_state,
             "bull_output": case_state["bull_output_v2"],
-
         }
+
         evaluator_v2_msg = run_agent("evaluator", case_state_for_v2)
         room.send_message(evaluator_v2_msg)
         case_state["evaluation_output_v2"] = evaluator_v2_msg["payload"]
-    
+
     case_state["final_bull_output"] = case_state.get("bull_output_v2", case_state["bull_output"])
     case_state["final_evaluation_output"] = case_state.get(
         "evaluation_output_v2",
@@ -466,7 +466,17 @@ def main():
     memo_msg = run_agent("memo", case_state)
     room.send_message(memo_msg)
     case_state["final_memo"] = memo_msg["payload"]
+
+    return {
+        "case_state": case_state,
+        "messages": room.messages,
+        "final_memo": case_state["final_memo"],
+    }
     
+def main():
+    result = run_full_research_case()
+    case_state = result["case_state"]
+
     print("\n=== DONE ===")
     print(f"Initial revision required: {case_state['evaluation_output']['revision_required']}")
 
@@ -476,5 +486,6 @@ def main():
 
     print(f"Final memo generated: {'final_memo' in case_state}")
     print(f"Human review required: {case_state['final_memo']['human_review_required']}")
+
 if __name__ == "__main__":
     main()
