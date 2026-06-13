@@ -10,19 +10,18 @@ from ai_core.agents import (
     run_evaluator_agent,
     run_memo_agent,
 )
-
+from ai_core.schemas import AgentMessage, CaseState
 
 def create_initial_case_state(
     evidence_pack: Dict[str, Any] = sample_evidence_pack,
-) -> Dict[str, Any]:
+) -> CaseState:
     return {
         "case_id": evidence_pack["case_id"],
         "ticker": evidence_pack["ticker"],
         "evidence_pack": evidence_pack,
     }
 
-
-def run_agent(agent_name: str, case_state: Dict[str, Any]) -> Dict[str, Any]:
+def run_agent(agent_name: str, case_state: CaseState) -> AgentMessage:
     case_id = case_state["case_id"]
     evidence_pack = case_state["evidence_pack"]
 
@@ -91,9 +90,9 @@ def run_agent(agent_name: str, case_state: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def handle_band_message(
-    message: Dict[str, Any],
-    case_state: Dict[str, Any],
-) -> Dict[str, Any]:
+    message: AgentMessage,
+    case_state: CaseState,
+) -> AgentMessage:
     """
     Lightweight adapter for future Band integration.
 

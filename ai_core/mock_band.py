@@ -1,12 +1,13 @@
 from typing import Any, Dict, List, Optional
 
+from ai_core.schemas import AgentMessage
 
 class MockBandRoom:
     def __init__(self, room_id: str):
         self.room_id = room_id
-        self.messages: List[Dict[str, Any]] = []
+        self.messages: List[AgentMessage] = []
 
-    def send_message(self, message: Dict[str, Any]) -> None:
+    def send_message(self, message: AgentMessage) -> None:
         self.messages.append(message)
         print(
             f"\n[MockBand: {self.room_id}] "
@@ -23,7 +24,7 @@ def wrap_message(
     to_agent: Optional[str] = None,
     revision_required: bool = False,
     target_agent: Optional[str] = None,
-) -> Dict[str, Any]:
+) -> AgentMessage:
     return {
         "case_id": case_id,
         "from_agent": from_agent,
