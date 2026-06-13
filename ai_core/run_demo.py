@@ -1,85 +1,13 @@
-from typing import Dict, Any, List, Optional
+import sys
+from pathlib import Path
+from typing import Dict, Any, Optional
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-sample_evidence_pack = {
-    "case_id": "AAPL-001",
-    "ticker": "AAPL",
-    "company": "Apple Inc.",
-    "evidence_items": [
-        {
-            "citation_id": "E1",
-            "claim": "FY26Q2 revenue was $96.4B, YoY +4.2%; services revenue was $26.8B, YoY +11.5%.",
-            "source": "STUB-10Q",
-            "date": "2026-05-02",
-        },
-        {
-            "citation_id": "E2",
-            "claim": "Gross margin was 46.9%; services gross margin was 74.1%.",
-            "source": "STUB-10Q",
-            "date": "2026-05-02",
-        },
-        {
-            "citation_id": "E3",
-            "claim": "Greater China revenue was $15.1B, YoY -8.3%.",
-            "source": "STUB-10Q",
-            "date": "2026-05-02",
-        },
-        {
-            "citation_id": "E4",
-            "claim": "The company announced a new $110B buyback authorization.",
-            "source": "STUB-Company Announcement",
-            "date": "2026-05-02",
-        },
-        {
-            "citation_id": "E5",
-            "claim": "Apple Intelligence 2 adoption reached 61% on eligible devices after iOS 20 release.",
-            "source": "STUB-News",
-            "date": "2026-04-18",
-        },
-        {
-            "citation_id": "E6",
-            "claim": "Supply chain data shows FY26H2 iPhone shipment estimate down 5%.",
-            "source": "STUB-Supply Chain Research",
-            "date": "2026-05-20",
-        },
-    ],
-}
-
-
-class MockBandRoom:
-    def __init__(self, room_id: str):
-        self.room_id = room_id
-        self.messages: List[Dict[str, Any]] = []
-
-    def send_message(self, message: Dict[str, Any]) -> None:
-        self.messages.append(message)
-        print(
-            f"\n[MockBand: {self.room_id}] "
-            f"{message['from_agent']} -> {message.get('to_agent') or 'ALL'}"
-        )
-        print(message)
-
-
-def wrap_message(
-    case_id: str,
-    from_agent: str,
-    payload: Dict[str, Any],
-    message_type: str = "agent_result",
-    to_agent: Optional[str] = None,
-    revision_required: bool = False,
-    target_agent: Optional[str] = None,
-) -> Dict[str, Any]:
-    return {
-        "case_id": case_id,
-        "from_agent": from_agent,
-        "to_agent": to_agent,
-        "message_type": message_type,
-        "status": "completed",
-        "payload": payload,
-        "revision_required": revision_required,
-        "target_agent": target_agent,
-    }
-
+from ai_core.sample_case import sample_evidence_pack
+from ai_core.mock_band import MockBandRoom, wrap_message
 
 def valid_citations(evidence_pack: Dict[str, Any]) -> set:
     return {item["citation_id"] for item in evidence_pack["evidence_items"]}
