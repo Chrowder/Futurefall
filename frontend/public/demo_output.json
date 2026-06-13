@@ -1,0 +1,503 @@
+{
+  "case_id": "AAPL-001",
+  "ticker": "AAPL",
+  "messages": [
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "DataStewardAgent",
+      "to_agent": null,
+      "message_type": "agent_result",
+      "status": "completed",
+      "payload": {
+        "case_id": "AAPL-001",
+        "ticker": "AAPL",
+        "company": "Apple Inc.",
+        "evidence_items": [
+          {
+            "citation_id": "E1",
+            "claim": "FY26Q2 revenue was $96.4B, YoY +4.2%; services revenue was $26.8B, YoY +11.5%.",
+            "source": "STUB-10Q",
+            "date": "2026-05-02"
+          },
+          {
+            "citation_id": "E2",
+            "claim": "Gross margin was 46.9%; services gross margin was 74.1%.",
+            "source": "STUB-10Q",
+            "date": "2026-05-02"
+          },
+          {
+            "citation_id": "E3",
+            "claim": "Greater China revenue was $15.1B, YoY -8.3%.",
+            "source": "STUB-10Q",
+            "date": "2026-05-02"
+          },
+          {
+            "citation_id": "E4",
+            "claim": "The company announced a new $110B buyback authorization.",
+            "source": "STUB-Company Announcement",
+            "date": "2026-05-02"
+          },
+          {
+            "citation_id": "E5",
+            "claim": "Apple Intelligence 2 adoption reached 61% on eligible devices after iOS 20 release.",
+            "source": "STUB-News",
+            "date": "2026-04-18"
+          },
+          {
+            "citation_id": "E6",
+            "claim": "Supply chain data shows FY26H2 iPhone shipment estimate down 5%.",
+            "source": "STUB-Supply Chain Research",
+            "date": "2026-05-20"
+          }
+        ]
+      },
+      "revision_required": false,
+      "target_agent": null
+    },
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "BullAgent",
+      "to_agent": null,
+      "message_type": "agent_result",
+      "status": "completed",
+      "payload": {
+        "bull_thesis": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+        "supporting_points": [
+          {
+            "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
+            "citation_id": "E1"
+          },
+          {
+            "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+            "citation_id": "E2"
+          },
+          {
+            "claim": "The $110B buyback authorization supports shareholder return.",
+            "citation_id": "E4"
+          },
+          {
+            "claim": "Apple Intelligence adoption will significantly boost iPhone demand.",
+            "citation_id": "E5"
+          }
+        ],
+        "key_assumptions": [
+          "Services growth remains stable.",
+          "Apple Intelligence adoption can support future device engagement."
+        ],
+        "confidence": 0.78
+      },
+      "revision_required": false,
+      "target_agent": null
+    },
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "BearAgent",
+      "to_agent": null,
+      "message_type": "agent_result",
+      "status": "completed",
+      "payload": {
+        "bear_thesis": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+        "attack_points": [
+          {
+            "target_claim": "AAPL has a constructive medium-term setup.",
+            "critique": "Greater China revenue declined 8.3% YoY, which weakens the growth narrative.",
+            "citation_id": "E3"
+          },
+          {
+            "target_claim": "Apple Intelligence adoption can support future device engagement.",
+            "critique": "Supply chain data still indicates FY26H2 iPhone shipment estimate down 5%, so adoption does not yet prove demand recovery.",
+            "citation_id": "E6"
+          }
+        ],
+        "missed_risks": [
+          {
+            "risk": "AI feature adoption may not translate into near-term iPhone upgrades.",
+            "citation_id": "E6"
+          }
+        ],
+        "confidence": 0.78
+      },
+      "revision_required": false,
+      "target_agent": null
+    },
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "RiskAgent",
+      "to_agent": null,
+      "message_type": "agent_result",
+      "status": "completed",
+      "payload": {
+        "risk_summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
+        "risk_flags": [
+          {
+            "risk": "Greater China revenue declined 8.3% YoY, creating regional growth pressure.",
+            "severity": "high",
+            "citation_id": "E3"
+          },
+          {
+            "risk": "FY26H2 iPhone shipment estimate is down 5%, suggesting device demand uncertainty.",
+            "severity": "high",
+            "citation_id": "E6"
+          },
+          {
+            "risk": "Apple Intelligence adoption may improve engagement, but current evidence does not prove near-term iPhone upgrade demand.",
+            "severity": "medium",
+            "citation_id": "E5"
+          }
+        ],
+        "confidence": 0.82
+      },
+      "revision_required": false,
+      "target_agent": null
+    },
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "EvaluatorAgent",
+      "to_agent": "BullAgent",
+      "message_type": "revision_request",
+      "status": "completed",
+      "payload": {
+        "faithfulness_score": 0.82,
+        "citation_coverage": 1.0,
+        "unsupported_claims": [
+          {
+            "source_agent": "BullAgent",
+            "claim": "Apple Intelligence adoption will significantly boost iPhone demand.",
+            "reason": "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
+            "required_action": "Lower confidence or rewrite with more cautious wording."
+          }
+        ],
+        "hallucination_risk": "medium",
+        "revision_required": true,
+        "target_agent": "BullAgent"
+      },
+      "revision_required": true,
+      "target_agent": "BullAgent"
+    },
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "BullAgent",
+      "to_agent": null,
+      "message_type": "agent_result",
+      "status": "completed",
+      "payload": {
+        "bull_thesis": "AAPL has a constructive but balanced medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns, while device demand recovery remains uncertain.",
+        "supporting_points": [
+          {
+            "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
+            "citation_id": "E1"
+          },
+          {
+            "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+            "citation_id": "E2"
+          },
+          {
+            "claim": "The $110B buyback authorization supports shareholder return.",
+            "citation_id": "E4"
+          },
+          {
+            "claim": "Apple Intelligence adoption may support future device engagement, but current evidence does not yet prove a significant iPhone demand boost.",
+            "citation_id": "E5"
+          }
+        ],
+        "key_assumptions": [
+          "Services growth remains stable.",
+          "Apple Intelligence adoption may support engagement, but demand impact requires further evidence."
+        ],
+        "confidence": 0.68,
+        "revision_note": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim."
+      },
+      "revision_required": false,
+      "target_agent": null
+    },
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "EvaluatorAgent",
+      "to_agent": null,
+      "message_type": "agent_result",
+      "status": "completed",
+      "payload": {
+        "faithfulness_score": 0.92,
+        "citation_coverage": 1.0,
+        "unsupported_claims": [],
+        "hallucination_risk": "low",
+        "revision_required": false,
+        "target_agent": null
+      },
+      "revision_required": false,
+      "target_agent": null
+    },
+    {
+      "case_id": "AAPL-001",
+      "from_agent": "MemoAgent",
+      "to_agent": null,
+      "message_type": "final_memo",
+      "status": "completed",
+      "payload": {
+        "company": "Apple Inc.",
+        "ticker": "AAPL",
+        "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
+        "bull_case": {
+          "bull_thesis": "AAPL has a constructive but balanced medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns, while device demand recovery remains uncertain.",
+          "supporting_points": [
+            {
+              "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
+              "citation_id": "E1"
+            },
+            {
+              "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+              "citation_id": "E2"
+            },
+            {
+              "claim": "The $110B buyback authorization supports shareholder return.",
+              "citation_id": "E4"
+            },
+            {
+              "claim": "Apple Intelligence adoption may support future device engagement, but current evidence does not yet prove a significant iPhone demand boost.",
+              "citation_id": "E5"
+            }
+          ],
+          "key_assumptions": [
+            "Services growth remains stable.",
+            "Apple Intelligence adoption may support engagement, but demand impact requires further evidence."
+          ],
+          "confidence": 0.68,
+          "revision_note": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim."
+        },
+        "bear_case": {
+          "bear_thesis": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+          "attack_points": [
+            {
+              "target_claim": "AAPL has a constructive medium-term setup.",
+              "critique": "Greater China revenue declined 8.3% YoY, which weakens the growth narrative.",
+              "citation_id": "E3"
+            },
+            {
+              "target_claim": "Apple Intelligence adoption can support future device engagement.",
+              "critique": "Supply chain data still indicates FY26H2 iPhone shipment estimate down 5%, so adoption does not yet prove demand recovery.",
+              "citation_id": "E6"
+            }
+          ],
+          "missed_risks": [
+            {
+              "risk": "AI feature adoption may not translate into near-term iPhone upgrades.",
+              "citation_id": "E6"
+            }
+          ],
+          "confidence": 0.78
+        },
+        "risk_flags": [
+          {
+            "risk": "Greater China revenue declined 8.3% YoY, creating regional growth pressure.",
+            "severity": "high",
+            "citation_id": "E3"
+          },
+          {
+            "risk": "FY26H2 iPhone shipment estimate is down 5%, suggesting device demand uncertainty.",
+            "severity": "high",
+            "citation_id": "E6"
+          },
+          {
+            "risk": "Apple Intelligence adoption may improve engagement, but current evidence does not prove near-term iPhone upgrade demand.",
+            "severity": "medium",
+            "citation_id": "E5"
+          }
+        ],
+        "evaluation_summary": {
+          "faithfulness_score": 0.92,
+          "citation_coverage": 1.0,
+          "hallucination_risk": "low",
+          "revision_required": false
+        },
+        "human_review_required": true,
+        "disclaimer": "This is a research support memo, not investment advice."
+      },
+      "revision_required": false,
+      "target_agent": null
+    }
+  ],
+  "frontend_timeline": [
+    {
+      "step": 1,
+      "agent": "DataStewardAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Evidence Pack Ready",
+      "summary": "Mock evidence pack for AAPL with 6 evidence items.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 2,
+      "agent": "BullAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Bull Thesis Generated",
+      "summary": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 3,
+      "agent": "BearAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Bear Critique Generated",
+      "summary": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 4,
+      "agent": "RiskAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Risk Flags Generated",
+      "summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 5,
+      "agent": "EvaluatorAgent",
+      "target": "BullAgent",
+      "message_type": "revision_request",
+      "title": "Revision Requested",
+      "summary": "EvaluatorAgent found 1 unsupported claim(s) and requested revision.",
+      "status": "completed",
+      "revision_required": true
+    },
+    {
+      "step": 6,
+      "agent": "BullAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Bull Thesis Revised",
+      "summary": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 7,
+      "agent": "EvaluatorAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Evaluation Passed",
+      "summary": "EvaluatorAgent passed the revised output with low hallucination risk.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 8,
+      "agent": "MemoAgent",
+      "target": "ALL",
+      "message_type": "final_memo",
+      "title": "Final Memo Generated",
+      "summary": "MemoAgent generated the final human-review research memo.",
+      "status": "completed",
+      "revision_required": false
+    }
+  ],
+  "initial_evaluation": {
+    "faithfulness_score": 0.82,
+    "citation_coverage": 1.0,
+    "unsupported_claims": [
+      {
+        "source_agent": "BullAgent",
+        "claim": "Apple Intelligence adoption will significantly boost iPhone demand.",
+        "reason": "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
+        "required_action": "Lower confidence or rewrite with more cautious wording."
+      }
+    ],
+    "hallucination_risk": "medium",
+    "revision_required": true,
+    "target_agent": "BullAgent"
+  },
+  "final_evaluation": {
+    "faithfulness_score": 0.92,
+    "citation_coverage": 1.0,
+    "unsupported_claims": [],
+    "hallucination_risk": "low",
+    "revision_required": false,
+    "target_agent": null
+  },
+  "final_memo": {
+    "company": "Apple Inc.",
+    "ticker": "AAPL",
+    "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
+    "bull_case": {
+      "bull_thesis": "AAPL has a constructive but balanced medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns, while device demand recovery remains uncertain.",
+      "supporting_points": [
+        {
+          "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
+          "citation_id": "E1"
+        },
+        {
+          "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+          "citation_id": "E2"
+        },
+        {
+          "claim": "The $110B buyback authorization supports shareholder return.",
+          "citation_id": "E4"
+        },
+        {
+          "claim": "Apple Intelligence adoption may support future device engagement, but current evidence does not yet prove a significant iPhone demand boost.",
+          "citation_id": "E5"
+        }
+      ],
+      "key_assumptions": [
+        "Services growth remains stable.",
+        "Apple Intelligence adoption may support engagement, but demand impact requires further evidence."
+      ],
+      "confidence": 0.68,
+      "revision_note": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim."
+    },
+    "bear_case": {
+      "bear_thesis": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+      "attack_points": [
+        {
+          "target_claim": "AAPL has a constructive medium-term setup.",
+          "critique": "Greater China revenue declined 8.3% YoY, which weakens the growth narrative.",
+          "citation_id": "E3"
+        },
+        {
+          "target_claim": "Apple Intelligence adoption can support future device engagement.",
+          "critique": "Supply chain data still indicates FY26H2 iPhone shipment estimate down 5%, so adoption does not yet prove demand recovery.",
+          "citation_id": "E6"
+        }
+      ],
+      "missed_risks": [
+        {
+          "risk": "AI feature adoption may not translate into near-term iPhone upgrades.",
+          "citation_id": "E6"
+        }
+      ],
+      "confidence": 0.78
+    },
+    "risk_flags": [
+      {
+        "risk": "Greater China revenue declined 8.3% YoY, creating regional growth pressure.",
+        "severity": "high",
+        "citation_id": "E3"
+      },
+      {
+        "risk": "FY26H2 iPhone shipment estimate is down 5%, suggesting device demand uncertainty.",
+        "severity": "high",
+        "citation_id": "E6"
+      },
+      {
+        "risk": "Apple Intelligence adoption may improve engagement, but current evidence does not prove near-term iPhone upgrade demand.",
+        "severity": "medium",
+        "citation_id": "E5"
+      }
+    ],
+    "evaluation_summary": {
+      "faithfulness_score": 0.92,
+      "citation_coverage": 1.0,
+      "hallucination_risk": "low",
+      "revision_required": false
+    },
+    "human_review_required": true,
+    "disclaimer": "This is a research support memo, not investment advice."
+  }
+}

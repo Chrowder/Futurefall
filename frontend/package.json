@@ -1,0 +1,24 @@
+{
+  "name": "futurefall-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Futurefall AI research workbench — frontend that visualizes the multi-agent research timeline and final memo.",
+  "scripts": {
+    "sync-data": "node scripts/sync-data.mjs",
+    "predev": "npm run sync-data",
+    "dev": "vite",
+    "prebuild": "npm run sync-data",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "framer-motion": "^11.15.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
+  }
+}
