@@ -5,7 +5,10 @@
   "type": "module",
   "description": "Futurefall AI research workbench — frontend that visualizes the multi-agent research timeline and final memo.",
   "scripts": {
+    "sync-data": "node scripts/sync-data.mjs",
+    "predev": "npm run sync-data",
     "dev": "vite",
+    "prebuild": "npm run sync-data",
     "build": "vite build",
     "preview": "vite preview"
   },
