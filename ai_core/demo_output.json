@@ -316,6 +316,88 @@
       "target_agent": null
     }
   ],
+  "frontend_timeline": [
+    {
+      "step": 1,
+      "agent": "DataStewardAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Evidence Pack Ready",
+      "summary": "Mock evidence pack for AAPL with 6 evidence items.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 2,
+      "agent": "BullAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Bull Thesis Generated",
+      "summary": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 3,
+      "agent": "BearAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Bear Critique Generated",
+      "summary": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 4,
+      "agent": "RiskAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Risk Flags Generated",
+      "summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 5,
+      "agent": "EvaluatorAgent",
+      "target": "BullAgent",
+      "message_type": "revision_request",
+      "title": "Revision Requested",
+      "summary": "EvaluatorAgent found 1 unsupported claim(s) and requested revision.",
+      "status": "completed",
+      "revision_required": true
+    },
+    {
+      "step": 6,
+      "agent": "BullAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Bull Thesis Revised",
+      "summary": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 7,
+      "agent": "EvaluatorAgent",
+      "target": "ALL",
+      "message_type": "agent_result",
+      "title": "Evaluation Passed",
+      "summary": "EvaluatorAgent passed the revised output with low hallucination risk.",
+      "status": "completed",
+      "revision_required": false
+    },
+    {
+      "step": 8,
+      "agent": "MemoAgent",
+      "target": "ALL",
+      "message_type": "final_memo",
+      "title": "Final Memo Generated",
+      "summary": "MemoAgent generated the final human-review research memo.",
+      "status": "completed",
+      "revision_required": false
+    }
+  ],
   "initial_evaluation": {
     "faithfulness_score": 0.82,
     "citation_coverage": 1.0,
