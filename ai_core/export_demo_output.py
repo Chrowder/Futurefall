@@ -1,8 +1,7 @@
 import json
 from pathlib import Path
 
-from ai_core.run_demo import run_full_research_case
-
+from ai_core.runner import run_full_research_case
 
 def main():
     result = run_full_research_case()

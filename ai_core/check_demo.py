@@ -1,10 +1,7 @@
 from typing import Any, List
 
-from ai_core.run_demo import (
-    run_full_research_case,
-    valid_citations,
-    handle_band_message,
-)
+from ai_core.runner import run_full_research_case, handle_band_message
+from ai_core.agents import valid_citations
 
 def collect_citation_ids(obj: Any) -> List[str]:
     citation_ids = []
