@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List
 
+from ai_core.case_state_store import get_case_path
+from ai_core.runner import run_chair_workflow
 from ai_core.runner import run_full_research_case
 
 
@@ -90,14 +92,18 @@ def build_frontend_timeline(messages: List[Dict[str, Any]]) -> List[Dict[str, An
 
 def main():
     result = run_full_research_case()
+    chair_result = run_chair_workflow()
     case_state = result["case_state"]
+    chair_case_state = chair_result["case_state"]
     messages = result["messages"]
 
     export_payload = {
         "case_id": case_state["case_id"],
         "ticker": case_state["ticker"],
+        "case_state_path": str(get_case_path(chair_case_state["case_id"])),
         "messages": messages,
         "frontend_timeline": build_frontend_timeline(messages),
+        "audit_log": chair_result["audit_log"],
         "initial_evaluation": case_state["evaluation_output"],
         "final_evaluation": case_state.get(
             "evaluation_output_v2",
@@ -114,6 +120,7 @@ def main():
     print(f"\nDemo output exported to: {output_path}")
     print(f"Messages exported: {len(export_payload['messages'])}")
     print(f"Timeline events exported: {len(export_payload['frontend_timeline'])}")
+    print(f"Audit events exported: {len(export_payload['audit_log'])}")
     print(f"Final memo generated: {'final_memo' in export_payload}")
 
 

@@ -1,6 +1,7 @@
 {
   "case_id": "AAPL-001",
   "ticker": "AAPL",
+  "case_state_path": "/Users/christinaxu/Desktop/Futurefall/ai_core/cases/AAPL-001.json",
   "messages": [
     {
       "case_id": "AAPL-001",
@@ -396,6 +397,136 @@
       "summary": "MemoAgent generated the final human-review research memo.",
       "status": "completed",
       "revision_required": false
+    }
+  ],
+  "audit_log": [
+    {
+      "timestamp": "2026-06-17T00:48:09.563734+00:00",
+      "agent": "ChairAgent",
+      "action": "case_created",
+      "target_agent": "DataStewardAgent",
+      "summary": "Created research case AAPL-001 for AAPL.",
+      "evidence_refs": []
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.564198+00:00",
+      "agent": "DataStewardAgent",
+      "action": "evidence_pack_ready",
+      "target_agent": "BullAgent",
+      "summary": "Prepared mock Evidence Pack with 6 items.",
+      "evidence_refs": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ]
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.564848+00:00",
+      "agent": "BullAgent",
+      "action": "bull_generated",
+      "target_agent": "BearAgent",
+      "summary": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+      "evidence_refs": [
+        "E1",
+        "E2",
+        "E4",
+        "E5"
+      ]
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.565312+00:00",
+      "agent": "BearAgent",
+      "action": "bear_generated",
+      "target_agent": "RiskAgent",
+      "summary": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+      "evidence_refs": [
+        "E3",
+        "E6"
+      ]
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.565821+00:00",
+      "agent": "RiskAgent",
+      "action": "risk_generated",
+      "target_agent": "EvaluatorAgent",
+      "summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
+      "evidence_refs": [
+        "E3",
+        "E6",
+        "E5"
+      ]
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.566413+00:00",
+      "agent": "EvaluatorAgent",
+      "action": "evaluation_completed",
+      "target_agent": "BullAgent",
+      "summary": "Initial evaluation completed. Revision required: True.",
+      "evidence_refs": []
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.567135+00:00",
+      "agent": "EvaluatorAgent",
+      "action": "revision_requested",
+      "target_agent": "BullAgent",
+      "summary": "Evaluator requested a BullAgent revision for an unsupported demand claim.",
+      "evidence_refs": [
+        "E5"
+      ]
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.567839+00:00",
+      "agent": "BullAgent",
+      "action": "bull_revised",
+      "target_agent": "EvaluatorAgent",
+      "summary": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim.",
+      "evidence_refs": [
+        "E1",
+        "E2",
+        "E4",
+        "E5"
+      ]
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.569044+00:00",
+      "agent": "EvaluatorAgent",
+      "action": "final_evaluation_completed",
+      "target_agent": "MemoAgent",
+      "summary": "Final evaluation completed. Revision required: False.",
+      "evidence_refs": []
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.570173+00:00",
+      "agent": "MemoAgent",
+      "action": "memo_generated",
+      "target_agent": "HumanReviewer",
+      "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
+      "evidence_refs": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ]
+    },
+    {
+      "timestamp": "2026-06-17T00:48:09.571377+00:00",
+      "agent": "ChairAgent",
+      "action": "human_review_pending",
+      "target_agent": "HumanReviewer",
+      "summary": "Final memo is ready for human review.",
+      "evidence_refs": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6"
+      ]
     }
   ],
   "initial_evaluation": {

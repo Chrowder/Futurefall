@@ -15,7 +15,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-ResponseBuilder = Callable[[PlatformMessage], str]
+from ai_core.case_state_store import append_audit_event, load_case_state, save_case_state
+
+DEFAULT_CASE_ID = "AAPL-001"
+DEFAULT_TICKER = "AAPL"
+
+BandReply = str | dict[str, Any]
+ResponseBuilder = Callable[[PlatformMessage], BandReply]
 
 
 def load_band_environment() -> None:
@@ -23,10 +29,34 @@ def load_band_environment() -> None:
 
 
 def get_band_user_handle() -> str:
-    user_handle = os.getenv("BAND_USER_HANDLE")
-    if not user_handle:
-        raise ValueError("BAND_USER_HANDLE is missing from .env")
-    return user_handle
+    return get_env_handle("BAND_USER_HANDLE")
+
+
+def get_env_handle(env_name: str) -> str:
+    handle = os.getenv(env_name)
+    if not handle:
+        raise ValueError(f"{env_name} is missing from .env")
+    return handle
+
+
+def optional_env_handle(env_name: str) -> str | None:
+    return os.getenv(env_name)
+
+
+def build_reply(content: str, mentions: list[str] | None = None) -> dict[str, Any]:
+    return {
+        "content": content,
+        "mentions": [item for item in mentions or [] if item],
+    }
+
+
+def resolve_reply(reply: BandReply) -> tuple[str, list[str]]:
+    if isinstance(reply, dict):
+        content = str(reply.get("content", ""))
+        mentions = reply.get("mentions") or [get_band_user_handle()]
+        return content, mentions
+
+    return reply, [get_band_user_handle()]
 
 
 def get_incoming_text(msg: PlatformMessage) -> str:
@@ -44,6 +74,18 @@ def get_incoming_text(msg: PlatformMessage) -> str:
 def looks_like_revision_request(msg: PlatformMessage) -> bool:
     text = get_incoming_text(msg).lower()
     return "revision_request" in text or "revise" in text or "revision" in text
+
+
+def persist_dispatch_step(case_state: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+    case_id = case_state["case_id"]
+    save_case_state(case_id, case_state)
+    return append_audit_event(case_id, event)
+
+
+def load_dispatch_case_state() -> dict[str, Any]:
+    case_state = load_case_state(DEFAULT_CASE_ID)
+    save_case_state(case_state["case_id"], case_state)
+    return case_state
 
 
 def bullet_lines(items: list[dict[str, Any]], key: str) -> str:
@@ -96,11 +138,11 @@ class BandAlphaRemoteAdapter(SimpleAdapter[list[dict]]):
                 message_type="task",
             )
 
-            response_text = self.response_builder(msg)
+            response_text, mentions = resolve_reply(self.response_builder(msg))
 
             await tools.send_message(
                 content=response_text,
-                mentions=[get_band_user_handle()],
+                mentions=mentions,
             )
 
             await tools.send_event(
@@ -152,4 +194,3 @@ def main_for(
     response_builder: ResponseBuilder,
 ) -> None:
     asyncio.run(run_remote_agent(agent_config_key, agent_name, response_builder))
-

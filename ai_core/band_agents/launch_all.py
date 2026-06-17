@@ -5,6 +5,7 @@ from thenvoi.config import load_agent_config
 from ai_core.band_agents import (
     bear_remote,
     bull_remote,
+    chair_remote,
     data_steward_remote,
     evaluator_remote,
     memo_remote,
@@ -13,6 +14,7 @@ from ai_core.band_agents import (
 from ai_core.band_agents.common import load_band_environment, run_remote_agent
 
 AGENTS = [
+    ("bandalpha_chair", "ChairAgent", chair_remote.build_response),
     ("bandalpha_data_steward", "DataStewardAgent", data_steward_remote.build_response),
     ("bandalpha_bull", "BullAgent", bull_remote.build_response),
     ("bandalpha_bear", "BearAgent", bear_remote.build_response),
@@ -56,4 +58,3 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
-

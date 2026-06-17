@@ -1,6 +1,9 @@
 bandalpha_ai_core:
   agent_id: "your_agent_uuid"
   api_key: "your_agent_api_key"
+bandalpha_chair:
+  agent_id: "your_chair_agent_uuid"
+  api_key: "your_chair_agent_api_key"
 bandalpha_data_steward:
   agent_id: "your_data_steward_agent_uuid"
   api_key: "your_data_steward_agent_api_key"
@@ -19,4 +22,3 @@ bandalpha_evaluator:
 bandalpha_memo:
   agent_id: "your_memo_agent_uuid"
   api_key: "your_memo_agent_api_key"
-

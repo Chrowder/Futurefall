@@ -1,8 +1,8 @@
-cat > .gitignore << 'EOF'
 .venv/
 .env
 agent_config.yaml
 __pycache__/
 *.pyc
 ai_core/__pycache__/
-EOF
+ai_core/cases/*.json
+!ai_core/cases/.gitkeep
