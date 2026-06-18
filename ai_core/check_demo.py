@@ -47,10 +47,13 @@ def main():
 
     assert case_state["evaluation_output"]["revision_required"] is True
     assert case_state["evaluation_output"]["target_agent"] == "BullAgent"
+    assert case_state["evaluation_output"]["confidence_calibration"] == "overconfident"
 
     assert "evaluation_output_v2" in case_state
     assert case_state["evaluation_output_v2"]["revision_required"] is False
     assert case_state["evaluation_output_v2"]["hallucination_risk"] == "low"
+    assert "risk_coverage_score" in case_state["evaluation_output_v2"]
+    assert "confidence_calibration" in case_state["evaluation_output_v2"]
 
     assert len(revision_messages) == 1
     assert revision_messages[0]["to_agent"] == "BullAgent"
@@ -58,6 +61,10 @@ def main():
     assert len(final_memo_messages) == 1
     assert final_memo["human_review_required"] is True
     assert final_memo["disclaimer"] == "This is a research support memo, not investment advice."
+    assert "risk_coverage_score" in final_memo["evaluation_summary"]
+    assert "confidence_calibration" in final_memo["evaluation_summary"]
+    assert "revision_reasons" in final_memo["evaluation_summary"]
+    assert "evaluation_notes" in final_memo["evaluation_summary"]
 
     assert invalid_citation_ids == []
     
@@ -76,8 +83,10 @@ def main():
 
     print("\n=== CHECKS PASSED ===")
     print("Initial revision required: True")
+    print("Initial confidence calibration: overconfident")
     print("After revision required: False")
     print("Final memo generated: True")
+    print("Enhanced evaluation summary present: True")
     print("All citation IDs are valid: True")
     print("Band adapter revision routing works: True")
 

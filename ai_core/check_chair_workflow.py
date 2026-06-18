@@ -11,7 +11,14 @@ def main():
     assert result["audit_log"]
     assert len(result["audit_log"]) >= 8
     assert case_state["evaluation_output"]["revision_required"] is True
+    assert case_state["evaluation_output"]["confidence_calibration"] == "overconfident"
     assert case_state["final_evaluation_output"]["revision_required"] is False
+    assert "risk_coverage_score" in case_state["final_evaluation_output"]
+    assert "confidence_calibration" in case_state["final_evaluation_output"]
+    assert "risk_coverage_score" in case_state["final_memo"]["evaluation_summary"]
+    assert "confidence_calibration" in case_state["final_memo"]["evaluation_summary"]
+    assert "revision_reasons" in case_state["final_memo"]["evaluation_summary"]
+    assert "evaluation_notes" in case_state["final_memo"]["evaluation_summary"]
     assert case_state["human_status"] == "pending_review"
     assert case_path.exists()
 
@@ -19,7 +26,9 @@ def main():
     print(f"Case JSON created: {case_path}")
     print(f"Audit events: {len(result['audit_log'])}")
     print("Initial revision required: True")
+    print("Initial confidence calibration: overconfident")
     print("Final revision required: False")
+    print("Enhanced evaluation summary present: True")
     print("Human status: pending_review")
 
 

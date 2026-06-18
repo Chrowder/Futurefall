@@ -150,6 +150,8 @@ def run_evaluator_agent(
 ) -> Dict[str, Any]:
     citations = valid_citations(evidence_pack)
     unsupported_claims = []
+    revision_reasons = []
+    evaluation_notes = []
     total_claims = 0
     cited_claims = 0
 
@@ -162,28 +164,32 @@ def run_evaluator_agent(
             cited_claims += 1
 
         if cid not in citations:
+            reason = f"Citation {cid} does not exist in Evidence Pack."
             unsupported_claims.append(
                 {
                     "source_agent": "BullAgent",
                     "claim": claim,
-                    "reason": f"Citation {cid} does not exist in Evidence Pack.",
+                    "reason": reason,
                     "required_action": "Revise with valid citation.",
                 }
             )
+            revision_reasons.append(reason)
 
         claim_lower = claim.lower()
         if "significantly boost" in claim_lower and "iphone demand" in claim_lower:
+            reason = (
+                "Evidence supports Apple Intelligence adoption rate, "
+                "but does not directly prove future iPhone demand growth."
+            )
             unsupported_claims.append(
                 {
                     "source_agent": "BullAgent",
                     "claim": claim,
-                    "reason": (
-                        "Evidence supports Apple Intelligence adoption rate, "
-                        "but does not directly prove future iPhone demand growth."
-                    ),
+                    "reason": reason,
                     "required_action": "Lower confidence or rewrite with more cautious wording.",
                 }
             )
+            revision_reasons.append(reason)
 
     for point in bear_output.get("attack_points", []):
         total_claims += 1
@@ -194,15 +200,33 @@ def run_evaluator_agent(
             cited_claims += 1
 
         if cid not in citations:
+            reason = f"Citation {cid} does not exist in Evidence Pack."
             unsupported_claims.append(
                 {
                     "source_agent": "BearAgent",
                     "claim": critique,
-                    "reason": f"Citation {cid} does not exist in Evidence Pack.",
+                    "reason": reason,
                     "required_action": "Revise with valid citation.",
                 }
             )
+            revision_reasons.append(reason)
 
+    bear_risk_refs = {
+        point.get("citation_id")
+        for point in bear_output.get("attack_points", []) + bear_output.get("missed_risks", [])
+        if point.get("citation_id")
+    }
+    if bear_risk_refs & {"E3", "E5", "E6"}:
+        evaluation_notes.append("BearAgent addressed at least one Evidence Pack risk.")
+    else:
+        evaluation_notes.append("BearAgent did not address an Evidence Pack risk.")
+        revision_reasons.append("BearAgent should address at least one Evidence Pack risk.")
+
+    risk_coverage_checks = {
+        "greater_china_weakness": False,
+        "iphone_shipment_uncertainty": False,
+        "ai_adoption_demand_uncertainty": False,
+    }
     if risk_output:
         for point in risk_output.get("risk_flags", []):
             total_claims += 1
@@ -213,17 +237,63 @@ def run_evaluator_agent(
                 cited_claims += 1
 
             if cid not in citations:
+                reason = f"Citation {cid} does not exist in Evidence Pack."
                 unsupported_claims.append(
                     {
                         "source_agent": "RiskAgent",
                         "claim": risk,
-                        "reason": f"Citation {cid} does not exist in Evidence Pack.",
+                        "reason": reason,
                         "required_action": "Revise with valid citation.",
                     }
                 )
+                revision_reasons.append(reason)
+
+            risk_lower = risk.lower()
+            if cid == "E3" or "greater china" in risk_lower:
+                risk_coverage_checks["greater_china_weakness"] = True
+            if cid == "E6" or "shipment" in risk_lower:
+                risk_coverage_checks["iphone_shipment_uncertainty"] = True
+            if cid in {"E5", "E6"} and (
+                "ai" in risk_lower or "apple intelligence" in risk_lower or "upgrade" in risk_lower
+            ):
+                risk_coverage_checks["ai_adoption_demand_uncertainty"] = True
+    else:
+        revision_reasons.append("RiskAgent output is missing.")
+
+    covered_risks = sum(1 for covered in risk_coverage_checks.values() if covered)
+    risk_coverage_score = round(covered_risks / len(risk_coverage_checks), 2)
+
+    if risk_coverage_checks["greater_china_weakness"]:
+        evaluation_notes.append("RiskAgent covered Greater China weakness.")
+    if risk_coverage_checks["iphone_shipment_uncertainty"]:
+        evaluation_notes.append("RiskAgent covered iPhone shipment uncertainty.")
+    if risk_coverage_checks["ai_adoption_demand_uncertainty"]:
+        evaluation_notes.append("RiskAgent covered AI adoption demand uncertainty.")
+
+    missing_risk_checks = [
+        name for name, covered in risk_coverage_checks.items() if not covered
+    ]
+    if missing_risk_checks:
+        revision_reasons.append(
+            f"RiskAgent should cover missing risk checks: {', '.join(missing_risk_checks)}."
+        )
 
     citation_coverage = cited_claims / total_claims if total_claims else 0
     revision_required = len(unsupported_claims) > 0
+    bull_confidence = bull_output.get("confidence", 0)
+
+    if unsupported_claims and bull_confidence >= 0.75:
+        confidence_calibration = "overconfident"
+        revision_reasons.append("BullAgent confidence is too high for an unsupported causal claim.")
+    elif unsupported_claims:
+        confidence_calibration = "needs_caution"
+    else:
+        confidence_calibration = "well_calibrated"
+
+    if citation_coverage == 1:
+        evaluation_notes.append("All evaluated claims include citation IDs.")
+    else:
+        evaluation_notes.append("Some evaluated claims are missing citation IDs.")
 
     return {
         "faithfulness_score": 0.82 if revision_required else 0.92,
@@ -232,6 +302,10 @@ def run_evaluator_agent(
         "hallucination_risk": "medium" if revision_required else "low",
         "revision_required": revision_required,
         "target_agent": "BullAgent" if revision_required else None,
+        "risk_coverage_score": risk_coverage_score,
+        "confidence_calibration": confidence_calibration,
+        "evaluation_notes": evaluation_notes,
+        "revision_reasons": revision_reasons,
     }
 
 
@@ -259,6 +333,10 @@ def run_memo_agent(
             "citation_coverage": evaluation_output["citation_coverage"],
             "hallucination_risk": evaluation_output["hallucination_risk"],
             "revision_required": evaluation_output["revision_required"],
+            "risk_coverage_score": evaluation_output["risk_coverage_score"],
+            "confidence_calibration": evaluation_output["confidence_calibration"],
+            "revision_reasons": evaluation_output["revision_reasons"],
+            "evaluation_notes": evaluation_output["evaluation_notes"],
         },
         "human_review_required": True,
         "disclaimer": "This is a research support memo, not investment advice.",

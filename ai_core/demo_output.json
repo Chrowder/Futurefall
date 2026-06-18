@@ -170,7 +170,20 @@
         ],
         "hallucination_risk": "medium",
         "revision_required": true,
-        "target_agent": "BullAgent"
+        "target_agent": "BullAgent",
+        "risk_coverage_score": 1.0,
+        "confidence_calibration": "overconfident",
+        "evaluation_notes": [
+          "BearAgent addressed at least one Evidence Pack risk.",
+          "RiskAgent covered Greater China weakness.",
+          "RiskAgent covered iPhone shipment uncertainty.",
+          "RiskAgent covered AI adoption demand uncertainty.",
+          "All evaluated claims include citation IDs."
+        ],
+        "revision_reasons": [
+          "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
+          "BullAgent confidence is too high for an unsupported causal claim."
+        ]
       },
       "revision_required": true,
       "target_agent": "BullAgent"
@@ -223,7 +236,17 @@
         "unsupported_claims": [],
         "hallucination_risk": "low",
         "revision_required": false,
-        "target_agent": null
+        "target_agent": null,
+        "risk_coverage_score": 1.0,
+        "confidence_calibration": "well_calibrated",
+        "evaluation_notes": [
+          "BearAgent addressed at least one Evidence Pack risk.",
+          "RiskAgent covered Greater China weakness.",
+          "RiskAgent covered iPhone shipment uncertainty.",
+          "RiskAgent covered AI adoption demand uncertainty.",
+          "All evaluated claims include citation IDs."
+        ],
+        "revision_reasons": []
       },
       "revision_required": false,
       "target_agent": null
@@ -308,7 +331,17 @@
           "faithfulness_score": 0.92,
           "citation_coverage": 1.0,
           "hallucination_risk": "low",
-          "revision_required": false
+          "revision_required": false,
+          "risk_coverage_score": 1.0,
+          "confidence_calibration": "well_calibrated",
+          "revision_reasons": [],
+          "evaluation_notes": [
+            "BearAgent addressed at least one Evidence Pack risk.",
+            "RiskAgent covered Greater China weakness.",
+            "RiskAgent covered iPhone shipment uncertainty.",
+            "RiskAgent covered AI adoption demand uncertainty.",
+            "All evaluated claims include citation IDs."
+          ]
         },
         "human_review_required": true,
         "disclaimer": "This is a research support memo, not investment advice."
@@ -401,7 +434,7 @@
   ],
   "audit_log": [
     {
-      "timestamp": "2026-06-17T00:48:09.563734+00:00",
+      "timestamp": "2026-06-18T01:08:17.541399+00:00",
       "agent": "ChairAgent",
       "action": "case_created",
       "target_agent": "DataStewardAgent",
@@ -409,7 +442,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-17T00:48:09.564198+00:00",
+      "timestamp": "2026-06-18T01:08:17.541879+00:00",
       "agent": "DataStewardAgent",
       "action": "evidence_pack_ready",
       "target_agent": "BullAgent",
@@ -424,7 +457,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-17T00:48:09.564848+00:00",
+      "timestamp": "2026-06-18T01:08:17.542250+00:00",
       "agent": "BullAgent",
       "action": "bull_generated",
       "target_agent": "BearAgent",
@@ -437,7 +470,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-17T00:48:09.565312+00:00",
+      "timestamp": "2026-06-18T01:08:17.542674+00:00",
       "agent": "BearAgent",
       "action": "bear_generated",
       "target_agent": "RiskAgent",
@@ -448,7 +481,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-17T00:48:09.565821+00:00",
+      "timestamp": "2026-06-18T01:08:17.543401+00:00",
       "agent": "RiskAgent",
       "action": "risk_generated",
       "target_agent": "EvaluatorAgent",
@@ -460,7 +493,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-17T00:48:09.566413+00:00",
+      "timestamp": "2026-06-18T01:08:17.543871+00:00",
       "agent": "EvaluatorAgent",
       "action": "evaluation_completed",
       "target_agent": "BullAgent",
@@ -468,7 +501,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-17T00:48:09.567135+00:00",
+      "timestamp": "2026-06-18T01:08:17.544542+00:00",
       "agent": "EvaluatorAgent",
       "action": "revision_requested",
       "target_agent": "BullAgent",
@@ -478,7 +511,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-17T00:48:09.567839+00:00",
+      "timestamp": "2026-06-18T01:08:17.545272+00:00",
       "agent": "BullAgent",
       "action": "bull_revised",
       "target_agent": "EvaluatorAgent",
@@ -491,7 +524,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-17T00:48:09.569044+00:00",
+      "timestamp": "2026-06-18T01:08:17.546153+00:00",
       "agent": "EvaluatorAgent",
       "action": "final_evaluation_completed",
       "target_agent": "MemoAgent",
@@ -499,7 +532,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-17T00:48:09.570173+00:00",
+      "timestamp": "2026-06-18T01:08:17.547084+00:00",
       "agent": "MemoAgent",
       "action": "memo_generated",
       "target_agent": "HumanReviewer",
@@ -514,7 +547,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-17T00:48:09.571377+00:00",
+      "timestamp": "2026-06-18T01:08:17.548747+00:00",
       "agent": "ChairAgent",
       "action": "human_review_pending",
       "target_agent": "HumanReviewer",
@@ -542,7 +575,20 @@
     ],
     "hallucination_risk": "medium",
     "revision_required": true,
-    "target_agent": "BullAgent"
+    "target_agent": "BullAgent",
+    "risk_coverage_score": 1.0,
+    "confidence_calibration": "overconfident",
+    "evaluation_notes": [
+      "BearAgent addressed at least one Evidence Pack risk.",
+      "RiskAgent covered Greater China weakness.",
+      "RiskAgent covered iPhone shipment uncertainty.",
+      "RiskAgent covered AI adoption demand uncertainty.",
+      "All evaluated claims include citation IDs."
+    ],
+    "revision_reasons": [
+      "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
+      "BullAgent confidence is too high for an unsupported causal claim."
+    ]
   },
   "final_evaluation": {
     "faithfulness_score": 0.92,
@@ -550,7 +596,17 @@
     "unsupported_claims": [],
     "hallucination_risk": "low",
     "revision_required": false,
-    "target_agent": null
+    "target_agent": null,
+    "risk_coverage_score": 1.0,
+    "confidence_calibration": "well_calibrated",
+    "evaluation_notes": [
+      "BearAgent addressed at least one Evidence Pack risk.",
+      "RiskAgent covered Greater China weakness.",
+      "RiskAgent covered iPhone shipment uncertainty.",
+      "RiskAgent covered AI adoption demand uncertainty.",
+      "All evaluated claims include citation IDs."
+    ],
+    "revision_reasons": []
   },
   "final_memo": {
     "company": "Apple Inc.",
@@ -626,7 +682,17 @@
       "faithfulness_score": 0.92,
       "citation_coverage": 1.0,
       "hallucination_risk": "low",
-      "revision_required": false
+      "revision_required": false,
+      "risk_coverage_score": 1.0,
+      "confidence_calibration": "well_calibrated",
+      "revision_reasons": [],
+      "evaluation_notes": [
+        "BearAgent addressed at least one Evidence Pack risk.",
+        "RiskAgent covered Greater China weakness.",
+        "RiskAgent covered iPhone shipment uncertainty.",
+        "RiskAgent covered AI adoption demand uncertainty.",
+        "All evaluated claims include citation IDs."
+      ]
     },
     "human_review_required": true,
     "disclaimer": "This is a research support memo, not investment advice."
