@@ -79,3 +79,50 @@ def append_audit_event(case_id: str, event: Dict[str, Any]) -> Dict[str, Any]:
     case_state.setdefault("audit_log", []).append(audit_event)
     save_case_state(case_id, case_state)
     return case_state
+
+
+def approve_case(case_id: str, reviewer: str = "human") -> Dict[str, Any]:
+    case_state = load_case_state(case_id)
+    case_state["human_status"] = "approved"
+    case_state["status"] = "human_approved"
+    save_case_state(case_id, case_state)
+
+    return append_audit_event(
+        case_id,
+        {
+            "agent": "HumanReviewer",
+            "action": "human_approved",
+            "target_agent": None,
+            "summary": "Human reviewer approved the final memo.",
+            "evidence_refs": [],
+            "reviewer": reviewer,
+        },
+    )
+
+
+def request_case_revision(
+    case_id: str,
+    reviewer: str = "human",
+    comment: str = "",
+) -> Dict[str, Any]:
+    case_state = load_case_state(case_id)
+    case_state["human_status"] = "revision_requested"
+    case_state["status"] = "human_revision_requested"
+    case_state["human_revision_comment"] = comment
+    save_case_state(case_id, case_state)
+
+    summary = "Human reviewer requested revisions."
+    if comment:
+        summary = f"{summary} Comment: {comment}"
+
+    return append_audit_event(
+        case_id,
+        {
+            "agent": "HumanReviewer",
+            "action": "human_revision_requested",
+            "target_agent": "ChairAgent",
+            "summary": summary,
+            "evidence_refs": [],
+            "reviewer": reviewer,
+        },
+    )

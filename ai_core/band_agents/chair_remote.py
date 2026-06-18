@@ -10,8 +10,21 @@ from ai_core.band_agents.common import (
     main_for,
     persist_dispatch_step,
 )
-from ai_core.case_state_store import create_or_reset_case
+from ai_core.case_state_store import approve_case, create_or_reset_case, request_case_revision
 from ai_core.runner import run_chair_workflow
+
+
+def is_approval_message(text: str) -> bool:
+    return "approve" in text or "approved" in text or "批准" in text
+
+
+def is_revision_message(text: str) -> bool:
+    return (
+        "request revision" in text
+        or "revise" in text
+        or "修改" in text
+        or "重新修改" in text
+    )
 
 
 def get_chair_mode(msg) -> str:
@@ -47,6 +60,8 @@ Final Memo Summary:
 
 Disclaimer:
 {final_memo.get("disclaimer")}
+
+Human review required. Reply @BandAlpha Chair approve to approve, or @BandAlpha Chair request revision: <comment> to request changes.
 """
     return build_reply(content, [get_band_user_handle()])
 
@@ -75,7 +90,41 @@ After completion, hand off to BullAgent with the evidence pack summary.
     return build_reply(content, [get_env_handle("BAND_DATA_STEWARD_HANDLE")])
 
 
+def build_approval_response() -> dict:
+    case_state = approve_case(DEFAULT_CASE_ID)
+    content = f"""ChairAgent recorded human approval.
+
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
+Human status: {case_state["human_status"]}
+Audit events: {len(case_state.get("audit_log", []))}
+"""
+    return build_reply(content, [get_band_user_handle()])
+
+
+def build_revision_request_response(msg) -> dict:
+    comment = get_incoming_text(msg).strip()
+    case_state = request_case_revision(DEFAULT_CASE_ID, comment=comment)
+    content = f"""ChairAgent recorded a human revision request.
+
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
+Human status: {case_state["human_status"]}
+Revision comment: {case_state.get("human_revision_comment", "")}
+Audit events: {len(case_state.get("audit_log", []))}
+"""
+    return build_reply(content, [get_band_user_handle()])
+
+
 def build_response(msg):
+    text = get_incoming_text(msg).lower()
+
+    if is_revision_message(text):
+        return build_revision_request_response(msg)
+
+    if is_approval_message(text):
+        return build_approval_response()
+
     if get_chair_mode(msg) == "dispatch":
         return build_dispatch_response()
 
