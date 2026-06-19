@@ -6,3 +6,4 @@ __pycache__/
 ai_core/__pycache__/
 ai_core/cases/*.json
 !ai_core/cases/.gitkeep
+.DS_Store
