@@ -1949,6 +1949,175 @@ def _build_rich_memo(
     return memo
 
 
+def _analysis_bullets(items: list[Dict[str, Any]], key: str, limit: int = 3) -> str:
+    selected = []
+    for item in items[:limit]:
+        text = item.get(key, "")
+        citation = item.get("citation_id")
+        suffix = f" [{citation}]" if citation else ""
+        if text:
+            selected.append(f"- {text}{suffix}")
+    return "\n".join(selected) or "- No cited item available."
+
+
+def _top_risk_view(risk_output: Dict[str, Any]) -> str:
+    risks = risk_output.get("risk_flags", [])
+    if not risks:
+        return risk_output.get("risk_summary") or "No risk flags available."
+
+    severity_rank = {"high": 0, "medium": 1, "low": 2}
+    ordered = sorted(
+        risks,
+        key=lambda item: severity_rank.get(str(item.get("severity", "")).lower(), 3),
+    )
+    return _analysis_bullets(ordered, "risk", limit=4)
+
+
+def _evidence_base_view(evidence_pack: Dict[str, Any], limit: int = 5) -> str:
+    lines = []
+    for item in evidence_items(evidence_pack)[:limit]:
+        citation = item.get("citation_id", "")
+        provider = item.get("provider", "")
+        claim = item.get("claim", "")
+        if claim:
+            lines.append(f"- {citation}: {claim} ({provider})")
+    return "\n".join(lines) or "- Evidence Pack is empty."
+
+
+def _quality_view(evaluation_output: Dict[str, Any]) -> str:
+    notes = evaluation_output.get("evaluation_notes", [])
+    revision_reasons = evaluation_output.get("revision_reasons", [])
+    coverage_gaps = evaluation_output.get("coverage_gaps", [])
+
+    parts = [
+        f"- Hallucination risk: {evaluation_output.get('hallucination_risk')}",
+        f"- Faithfulness score: {evaluation_output.get('faithfulness_score')}",
+        f"- Citation coverage: {evaluation_output.get('citation_coverage')}",
+        f"- Risk coverage score: {evaluation_output.get('risk_coverage_score')}",
+        f"- Confidence calibration: {evaluation_output.get('confidence_calibration')}",
+        f"- Revision required: {evaluation_output.get('revision_required')}",
+    ]
+    if revision_reasons:
+        parts.append("- Revision reasons: " + "; ".join(revision_reasons[:2]))
+    if coverage_gaps:
+        parts.append("- Remaining coverage gaps: " + "; ".join(coverage_gaps[:2]))
+    if notes:
+        parts.append("- Evaluator notes: " + "; ".join(notes[:3]))
+    return "\n".join(parts)
+
+
+def _build_analysis_memo(
+    evidence_pack: Dict[str, Any],
+    bull_output: Dict[str, Any],
+    bear_output: Dict[str, Any],
+    risk_output: Dict[str, Any],
+    evaluation_output: Dict[str, Any],
+    blind_context: Optional[Dict[str, Any]] = None,
+) -> str:
+    f = _extract_financials(evidence_pack)
+    ticker = evidence_pack["ticker"]
+    company = evidence_pack.get("company", ticker)
+    case_id = evidence_pack.get("case_id", f"{ticker}-001")
+
+    bull_thesis = bull_output.get("bull_thesis", "")
+    bear_thesis = bear_output.get("bear_thesis", "")
+    risk_summary = risk_output.get("risk_summary", "")
+    final_risk = evaluation_output.get("hallucination_risk", "unknown")
+    revision_required = evaluation_output.get("revision_required")
+    confidence = evaluation_output.get("confidence_calibration", "unknown")
+
+    market_line = "Market data is incomplete."
+    if f["market_available"] and f.get("market_cap_available"):
+        market_line = (
+            f"Market cap is {f['market_cap_fmt']} and price is {f['price_fmt']}; "
+            "this gives a market reference point but still does not provide valuation comparables."
+        )
+    elif f["market_available"]:
+        market_line = (
+            f"Price is {f['price_fmt']} with previous close {f['prev_close_fmt']}; "
+            "market cap is unavailable, so valuation ratios remain incomplete."
+        )
+
+    financial_line = (
+        f"Reported revenue is {f['revenue_fmt']} and net income is {f['net_income_fmt']}; "
+        f"net margin is {f['margin_fmt']}."
+        if f.get("revenue_val") or f.get("net_income_val")
+        else "The Evidence Pack is not sufficient for a full financial trend view."
+    )
+
+    blind_signal = ""
+    if blind_context:
+        bull_first_pass = blind_context.get("bull_first_pass", {})
+        bear_first_pass = blind_context.get("bear_first_pass", {})
+        bull_rebuttal = blind_context.get("bull_rebuttal", {})
+        bear_rebuttal = blind_context.get("bear_rebuttal", {})
+        accepted = len(bull_rebuttal.get("accepted_critiques", []))
+        rejected = len(bull_rebuttal.get("rejected_critiques", []))
+        persistent = len(bear_rebuttal.get("remaining_objections", []))
+        conceded = len(bear_rebuttal.get("conceded_points", []))
+        blind_signal = f"""
+Parallel Blind Review Analysis
+The parallel blind pass produced useful disagreement rather than a single-agent echo. BullAgent initially framed the case as constructive: {bull_first_pass.get("bull_thesis", bull_thesis)} BearAgent independently challenged that view: {bear_first_pass.get("bear_thesis", bear_thesis)}
+
+After cross-disclosure, the debate moved the conclusion in a more cautious direction. BullAgent accepted {accepted} BearAgent critique(s) and rejected {rejected}; BearAgent conceded {conceded} BullAgent point(s) while keeping {persistent} persistent objection(s).
+
+Main convergence:
+{_analysis_bullets(bear_rebuttal.get("conceded_points", []), "point", limit=3)}
+
+Remaining disagreement:
+{_analysis_bullets(bear_rebuttal.get("remaining_objections", []), "objection", limit=3)}
+
+Impact on final conclusion:
+The parallel review does not eliminate the bull case, but it lowers the confidence that positive evidence can be converted into a strong forward-looking conclusion. The final stance should therefore emphasize evidence-backed support, unresolved objections, and human review rather than a directional recommendation.
+"""
+
+    return f"""Research Support Analysis Memo
+{company} ({ticker}) | Case: {case_id}
+
+Conclusion
+Hold / watchlist. The case is investable as a research question, not as a trade recommendation. The evidence supports a cautious baseline view, but the memo should not be read as a buy or sell call. Final hallucination risk is {final_risk}; revision required is {revision_required}; confidence calibration is {confidence}.
+
+Analytical Thesis
+The constructive case rests on cited operating and financial evidence, but its strength depends on whether those facts translate into durable growth, valuation support, and reduced execution risk. {financial_line} {market_line}
+{blind_signal}
+
+Bull Interpretation
+{bull_thesis}
+
+The strongest cited support is:
+{_analysis_bullets(bull_output.get("supporting_points", []), "claim", limit=3)}
+
+Bear Interpretation
+{bear_thesis}
+
+The bear case matters because it challenges the conversion from evidence to conclusion:
+{_analysis_bullets(bear_output.get("attack_points", []), "critique", limit=3)}
+
+Risk Weighting
+{risk_summary}
+
+Highest-priority risk checks:
+{_top_risk_view(risk_output)}
+
+Key Debate
+The central analytical question is not whether the company has valid supporting evidence; it is whether the evidence is strong enough to justify a high-confidence forward-looking conclusion. The balanced answer is no: the workflow supports a cautious research memo, while valuation context, trend history, and unresolved risk factors should keep the final stance restrained.
+
+Evidence Base
+{_evidence_base_view(evidence_pack)}
+
+Evaluator Audit
+{_quality_view(evaluation_output)}
+
+Human Review Focus
+- Verify that the latest filings and market data are current enough for the research question.
+- Check whether the bull thesis depends on assumptions not directly proven by the Evidence Pack.
+- Decide whether the listed risks should lower confidence further.
+- Keep the final use case as research support only, not investment advice.
+
+Disclaimer
+This is a research support memo, not investment advice."""
+
+
 def run_memo_agent(
     evidence_pack: Dict[str, Any],
     bull_output: Dict[str, Any],
@@ -1961,11 +2130,13 @@ def run_memo_agent(
     ticker = evidence_pack["ticker"]
 
     if blind_context:
-        # Parallel blind review always gets the full debate memo, regardless of stub/hybrid.
-        # Financial sections will be sparse for stub packs but debate section will be complete.
-        summary = _build_rich_blind_memo(
-            evidence_pack, bull_output, bear_output, risk_output, evaluation_output,
-            blind_context,
+        summary = _build_analysis_memo(
+            evidence_pack,
+            bull_output,
+            bear_output,
+            risk_output,
+            evaluation_output,
+            blind_context=blind_context,
         )
     elif is_stub_evidence_pack(evidence_pack):
         evidence_lines = "\n".join(
@@ -2014,7 +2185,12 @@ Evidence And Audit
 Human Review Focus
 Review E3/E5/E6 for the boundary between demand evidence, regional pressure, and AI conversion assumptions. Confirm the memo remains research support rather than investment advice."""
     else:
-        summary = _build_rich_memo(
+        summary = _build_analysis_memo(
+            evidence_pack, bull_output, bear_output, risk_output, evaluation_output
+        )
+
+    if not blind_context and is_stub_evidence_pack(evidence_pack):
+        summary = _build_analysis_memo(
             evidence_pack, bull_output, bear_output, risk_output, evaluation_output
         )
 
@@ -2033,28 +2209,33 @@ Risk flags:
 Evaluation:
 {json.dumps(evaluation_output, indent=2)}
 
-Write a structured English research memo for a human reviewer.
+Write a structured English analytical research memo for a human reviewer.
 Use only the provided evidence and agent outputs.
 Keep the language cautious and make clear this is research support, not investment advice.
+Do not concatenate or restate each agent report. Synthesize the disagreement into an analytical conclusion.
+Prefer judgment, evidence weighting, and key risks over raw transcript detail.
 Return only the memo text, not JSON.
 Use these exact section headings in English:
-Research Memo
-Rating / Conclusion
-Bull Case
-Bear Case
+Research Support Analysis Memo
+Conclusion
+Analytical Thesis
+Bull Interpretation
+Bear Interpretation
+Risk Weighting
 Key Debate
-Risk Pressure Test
-Evidence Table
-Audit And Dissent
+Evidence Base
+Evaluator Audit
 Human Review Focus
 Keep it specific, evidence-linked, and under 900 words.
 """
-    generated = generate_agent_text(
-        "memo",
-        "aimlapi",
-        "You are MemoAgent in a human-in-the-loop research support workflow.",
-        prompt,
-    )
+    generated = None
+    if not blind_context:
+        generated = generate_agent_text(
+            "memo",
+            "aimlapi",
+            "You are MemoAgent in a human-in-the-loop research support workflow.",
+            prompt,
+        )
     summary = generated or summary
 
     return {

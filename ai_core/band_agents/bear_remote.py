@@ -3,6 +3,7 @@ from ai_core.agents import (
     run_bear_first_pass_agent,
     run_bear_rebuttal_agent,
     run_bull_agent,
+    run_bull_first_pass_agent,
 )
 from ai_core.band_agents.common import (
     build_reply,
@@ -25,8 +26,20 @@ def build_response(msg):
 
     if looks_like_blind_rebuttal(msg):
         # Phase 2: BullAgent has rebutted; BearAgent now rebuts, then hands to Risk.
-        bull_first_pass = case_state.get("bull_first_pass") or case_state.get("bull_output")
-        bear_first_pass = case_state.get("bear_first_pass") or case_state.get("bear_output")
+        bull_first_pass = (
+            case_state.get("bull_first_pass")
+            or case_state.get("bull_output")
+            or run_bull_first_pass_agent(evidence_pack)
+        )
+        bear_first_pass = (
+            case_state.get("bear_first_pass")
+            or case_state.get("bear_output")
+            or run_bear_first_pass_agent(evidence_pack)
+        )
+        case_state["bull_first_pass"] = bull_first_pass
+        case_state["bull_output"] = bull_first_pass
+        case_state["bear_first_pass"] = bear_first_pass
+        case_state["bear_output"] = bear_first_pass
         bear_rebuttal = run_bear_rebuttal_agent(
             evidence_pack, bull_first_pass, bear_first_pass
         )

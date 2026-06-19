@@ -123,21 +123,17 @@ def build_parallel_blind_response(msg) -> dict:
 
     ticker = case_state["ticker"]
     case_id = case_state["case_id"]
-    # Dispatch to BullAgent only; the chain then hands off sequentially:
-    # Bull first pass -> Bear first pass -> Bull rebuttal -> Bear rebuttal -> Risk
-    # -> Evaluator -> Memo. Each agent posts in the room, so the full blind
-    # choreography (including the Phase-2 rebuttal exchange) is visible.
-    dispatch_content = f"""BullAgent please start the blind first pass.
+    dispatch_content = f"""BullAgent and BearAgent please start the blind first pass in parallel.
 
 case_id: {case_id}
 ticker: {ticker}
 mode: blind_first_pass
-instruction: independently analyze the Evidence Pack without reading any BearAgent output, then hand off to BearAgent.
+instruction: independently analyze the Evidence Pack without reading the other side's output. BearAgent should trigger BullAgent rebuttal after both first passes are posted.
 """
 
     content = (
         f"Parallel blind review started for {ticker}. "
-        "Dispatching the blind first pass to BullAgent."
+        "Dispatching BullAgent and BearAgent for independent first passes."
     )
     return build_reply(
         content,
@@ -145,7 +141,10 @@ instruction: independently analyze the Evidence Pack without reading any BearAge
         extra_messages=[
             {
                 "content": dispatch_content,
-                "mentions": [optional_env_handle("BAND_BULL_HANDLE")],
+                "mentions": [
+                    optional_env_handle("BAND_BULL_HANDLE"),
+                    optional_env_handle("BAND_BEAR_HANDLE"),
+                ],
             }
         ],
     )

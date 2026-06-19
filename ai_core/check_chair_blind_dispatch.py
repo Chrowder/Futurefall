@@ -29,9 +29,11 @@ def main() -> None:
     assert "mode: blind_first_pass" in extra_messages[0]["content"]
     assert "case_id: AAPL-001" in extra_messages[0]["content"]
     assert "ticker: AAPL" in extra_messages[0]["content"]
-    # Blind dispatch now goes to BullAgent only; the chain then hands off
-    # Bull -> Bear -> Bull rebuttal -> Bear rebuttal -> Risk -> ... -> Memo.
-    assert len(extra_messages[0]["mentions"]) == 1
+    # Blind dispatch starts BullAgent and BearAgent together; BearAgent then
+    # triggers Bull rebuttal after both first-pass messages are posted.
+    assert len(extra_messages[0]["mentions"]) == 2
+    assert os.environ["BAND_BULL_HANDLE"] in extra_messages[0]["mentions"]
+    assert os.environ["BAND_BEAR_HANDLE"] in extra_messages[0]["mentions"]
 
     fallback_content, fallback_mentions, fallback_used = prepare_outgoing_message(
         "BullAgent completed blind first pass.",
@@ -54,7 +56,7 @@ def main() -> None:
     print("\n=== CHAIR BLIND DISPATCH CHECKS PASSED ===")
     print("Chair blind mode returns immediately: True")
     print("Dispatch message includes mode: blind_first_pass")
-    print("Dispatch mentions BullAgent (sequential chain start): True")
+    print("Dispatch mentions BullAgent and BearAgent together: True")
     print("Missing target agent falls back to human reviewer: True")
 
 
