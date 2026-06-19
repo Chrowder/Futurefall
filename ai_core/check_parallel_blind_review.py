@@ -28,15 +28,17 @@ def main():
         assert case_state["evaluation_output"]["revision_required"] is True
         assert case_state["final_evaluation_output"]["revision_required"] is False
 
-        print("\n=== PARALLEL BLIND REVIEW CHECKS PASSED ===")
-        print("Parallel blind review enabled: True")
-        print("Bull first pass exists: True")
-        print("Bear first pass exists: True")
-        print("Bull rebuttal exists: True")
-        print("Bear rebuttal exists: True")
-        print("Initial revision required: True")
-        print("Final revision required: False")
-        print(f"Audit events: {len(result['audit_log'])}")
+        print(case_state["final_memo"]["summary"])
+
+        print("\n" + "─" * 80)
+        print("PARALLEL BLIND REVIEW STATUS")
+        print("─" * 80)
+        print(f"  All workflow assertions:    PASSED")
+        print(f"  Phase 1 (first passes):     {result.get('phase1_elapsed', 'N/A')}s  [parallel]")
+        print(f"  Phase 2 (rebuttals):        {result.get('phase2_elapsed', 'N/A')}s  [parallel]")
+        print(f"  Initial revision required:  {case_state['evaluation_output']['revision_required']}")
+        print(f"  Final revision required:    {case_state['final_evaluation_output']['revision_required']}")
+        print(f"  Audit events:               {len(result['audit_log'])}")
     finally:
         if original_provider is None:
             os.environ.pop("EVIDENCE_PROVIDER", None)

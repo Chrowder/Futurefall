@@ -2,6 +2,7 @@ from ai_core.agents import (
     run_bear_agent,
     run_bull_agent,
     run_bull_first_pass_agent,
+    run_bull_rebuttal_agent,
     run_bull_revision_agent,
     run_evaluator_agent,
     run_risk_agent,
@@ -12,6 +13,7 @@ from ai_core.band_agents.common import (
     get_dispatch_evidence_pack,
     load_dispatch_case_state,
     looks_like_blind_first_pass,
+    looks_like_blind_rebuttal,
     looks_like_revision_request,
     main_for,
     optional_env_handle,
@@ -23,6 +25,50 @@ def build_response(msg):
     case_state = load_dispatch_case_state(msg)
     evidence_pack = get_dispatch_evidence_pack(case_state)
     case_state["evidence_pack"] = evidence_pack
+
+    if looks_like_blind_rebuttal(msg):
+        # Phase 2: both blind first passes are in; BullAgent now rebuts.
+        bull_first_pass = case_state.get("bull_first_pass") or case_state.get("bull_output")
+        bear_first_pass = case_state.get("bear_first_pass") or case_state.get("bear_output")
+        bull_rebuttal = run_bull_rebuttal_agent(
+            evidence_pack, bull_first_pass, bear_first_pass
+        )
+        case_state["bull_rebuttal"] = bull_rebuttal
+        case_state["blind_review_status"] = "bull_rebuttal_completed"
+        case_state["status"] = "bull_rebuttal_completed"
+        case_state = persist_dispatch_step(
+            case_state,
+            {
+                "agent": "BullAgent",
+                "action": "bull_rebuttal_completed",
+                "target_agent": "BearAgent",
+                "summary": bull_rebuttal["rebuttal_summary"],
+                "evidence_refs": [
+                    ap.get("citation_id")
+                    for ap in bull_rebuttal.get("accepted_critiques", [])
+                    if ap.get("citation_id")
+                ],
+            },
+        )
+
+        content = f"""BullAgent completed its rebuttal (Phase 2).
+
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
+mode: blind_rebuttal
+
+Rebuttal summary:
+{bull_rebuttal["rebuttal_summary"]}
+
+Accepted from BearAgent:
+{bullet_lines(bull_rebuttal.get("accepted_critiques", []), "critique")}
+
+Rejected from BearAgent:
+{bullet_lines(bull_rebuttal.get("rejected_critiques", []), "critique")}
+
+BearAgent please complete your rebuttal (mode: blind_rebuttal), then hand off to RiskAgent.
+"""
+        return build_reply(content, [optional_env_handle("BAND_BEAR_HANDLE")])
 
     if looks_like_blind_first_pass(msg):
         bull_output = run_bull_first_pass_agent(evidence_pack)

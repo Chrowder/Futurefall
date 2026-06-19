@@ -23,7 +23,7 @@ from ai_core.data_providers.evidence_builder import build_evidence_pack
 
 DEFAULT_CASE_ID = "AAPL-001"
 DEFAULT_TICKER = "AAPL"
-MAX_BAND_MESSAGE_CHARS = 2400
+MAX_BAND_MESSAGE_CHARS = 6000
 COMPANY_TICKERS = {
     "microsoft": "MSFT",
     "微软": "MSFT",
@@ -122,6 +122,89 @@ def trim_band_message(content: Any, max_chars: int = MAX_BAND_MESSAGE_CHARS) -> 
         return text
 
     return text[: max_chars - 80].rstrip() + "\n\n[truncated for Band room readability]"
+
+
+def chunk_for_band(content: Any, max_chars: int = MAX_BAND_MESSAGE_CHARS - 400) -> list[str]:
+    """Split a long memo into Band-sized chunks, breaking on line boundaries.
+
+    The full 11-section blind-review memo runs ~13k chars — more than double a
+    single Band message limit. This splits it so each part survives the
+    per-message trim instead of being cut off mid-report. Headroom (max - 400)
+    leaves room for a "part N/M" prefix without re-triggering truncation.
+    """
+    text = str(content or "").strip()
+    if len(text) <= max_chars:
+        return [text] if text else [""]
+
+    chunks: list[str] = []
+    current: list[str] = []
+    current_len = 0
+    for line in text.splitlines():
+        line_len = len(line) + 1
+        if current and current_len + line_len > max_chars:
+            chunks.append("\n".join(current))
+            current = []
+            current_len = 0
+        current.append(line)
+        current_len += line_len
+    if current:
+        chunks.append("\n".join(current))
+
+    return chunks or [""]
+
+
+# Characters used purely for terminal decoration in the rich memo.
+_RULE_CHARS = set(" ─═━–—-=_")
+_BOX_CHARS = "┌┐└┘├┤┬┴┼│─═"
+
+
+def format_memo_for_band(text: Any) -> str:
+    """Convert the terminal-formatted rich memo into a chat-friendly layout.
+
+    The memo is rendered for an 80-column terminal: full-width ── / ══ rules and
+    ┌─┐ boxes around section headers. In a Band room those long bars read as
+    noise. This strips the decorative rules, unwraps the boxed sub-headers to
+    their inner text, bolds numbered section titles, and collapses blank runs —
+    keeping all content, dropping only the terminal chrome.
+    """
+    lines = []
+    for raw_line in str(text or "").split("\n"):
+        stripped = raw_line.strip()
+        if not stripped:
+            lines.append("")
+            continue
+
+        # Drop pure horizontal rules (── / ══ / ── sub-rules).
+        if all(ch in _RULE_CHARS for ch in stripped):
+            continue
+
+        # Unwrap boxed sub-headers (┌─ PHASE 1 ... ─┐ / └───┘) to inner text.
+        if any(ch in stripped for ch in "┌┐└┘├┤"):
+            inner = stripped.strip(_BOX_CHARS + " ")
+            if not inner:
+                continue
+            raw_line = inner
+            stripped = inner
+
+        lines.append(raw_line)
+
+    # Bold numbered section titles and collapse repeated blank lines.
+    result = []
+    blank_run = 0
+    for line in lines:
+        if not line.strip():
+            blank_run += 1
+            if blank_run > 1:
+                continue
+            result.append("")
+            continue
+        blank_run = 0
+        if re.match(r"^\d+\.\s+[A-Z0-9]", line.strip()):
+            result.append(f"**{line.strip()}**")
+        else:
+            result.append(line)
+
+    return "\n".join(result).strip()
 
 
 def safe_mentions_for_room(
@@ -280,6 +363,10 @@ def looks_like_revision_request(msg: PlatformMessage) -> bool:
 
 def looks_like_blind_first_pass(msg: PlatformMessage) -> bool:
     return "blind_first_pass" in get_incoming_text(msg).lower()
+
+
+def looks_like_blind_rebuttal(msg: PlatformMessage) -> bool:
+    return "blind_rebuttal" in get_incoming_text(msg).lower()
 
 
 def persist_dispatch_step(case_state: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:

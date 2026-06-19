@@ -3,6 +3,8 @@ import os
 from ai_core.band_agents.common import (
     build_reply,
     case_id_for_ticker,
+    chunk_for_band,
+    format_memo_for_band,
     extract_case_id,
     extract_ticker,
     get_band_user_handle,
@@ -12,7 +14,7 @@ from ai_core.band_agents.common import (
     persist_dispatch_step,
 )
 from ai_core.case_state_store import approve_case, create_or_reset_case, request_case_revision
-from ai_core.runner import run_chair_workflow
+from ai_core.runner import run_chair_workflow, run_parallel_blind_workflow
 
 
 def is_approval_message(text: str) -> bool:
@@ -35,6 +37,23 @@ def is_parallel_blind_message(text: str) -> bool:
         or "parallel" in text
         or "并行" in text
         or "盲评" in text
+    )
+
+
+def is_full_blind_message(text: str) -> bool:
+    """Full in-process blind workflow → posts the complete 11-section memo.
+
+    Distinct from is_parallel_blind_message (distributed first-pass dispatch).
+    """
+    return (
+        "blind-full" in text
+        or "full blind" in text
+        or "blind full" in text
+        or "blind report" in text
+        or "blind memo" in text
+        or "full parallel" in text
+        or "完整盲评" in text
+        or "完整并行" in text
     )
 
 
@@ -104,17 +123,21 @@ def build_parallel_blind_response(msg) -> dict:
 
     ticker = case_state["ticker"]
     case_id = case_state["case_id"]
-    dispatch_content = f"""BullAgent and BearAgent please start a parallel blind first pass.
+    # Dispatch to BullAgent only; the chain then hands off sequentially:
+    # Bull first pass -> Bear first pass -> Bull rebuttal -> Bear rebuttal -> Risk
+    # -> Evaluator -> Memo. Each agent posts in the room, so the full blind
+    # choreography (including the Phase-2 rebuttal exchange) is visible.
+    dispatch_content = f"""BullAgent please start the blind first pass.
 
 case_id: {case_id}
 ticker: {ticker}
 mode: blind_first_pass
-instruction: independently analyze the Evidence Pack without seeing the other side's output.
+instruction: independently analyze the Evidence Pack without reading any BearAgent output, then hand off to BearAgent.
 """
 
     content = (
         f"Parallel blind review started for {ticker}. "
-        "Dispatching BullAgent and BearAgent."
+        "Dispatching the blind first pass to BullAgent."
     )
     return build_reply(
         content,
@@ -122,13 +145,60 @@ instruction: independently analyze the Evidence Pack without seeing the other si
         extra_messages=[
             {
                 "content": dispatch_content,
-                "mentions": [
-                    optional_env_handle("BAND_BULL_HANDLE"),
-                    optional_env_handle("BAND_BEAR_HANDLE"),
-                ],
+                "mentions": [optional_env_handle("BAND_BULL_HANDLE")],
             }
         ],
     )
+
+
+def build_full_blind_response(msg) -> dict:
+    """Run the complete parallel blind workflow in-process and post the full memo.
+
+    Unlike build_parallel_blind_response (which only dispatches the first pass to
+    the Bull/Bear remote agents), this runs run_parallel_blind_workflow end to end
+    — true-parallel Phase 1 + Phase 2, rebuttal folding, risk, evaluation, and the
+    11-section memo — then streams the memo back to the room in Band-sized parts.
+    """
+    case_id, ticker = case_context_from_message(msg)
+    result = run_parallel_blind_workflow(case_id=case_id, ticker=ticker)
+    case_state = result["case_state"]
+    final_memo = result["final_memo"]
+    summary = format_memo_for_band(final_memo.get("summary", ""))
+
+    chunks = chunk_for_band(summary)
+    total = len(chunks)
+
+    header = f"""ChairAgent completed the FULL parallel blind review workflow (in-process).
+
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
+Workflow status: {case_state["status"]}
+Phase 1 (first passes): {result.get("phase1_elapsed")}s [parallel]
+Phase 2 (rebuttals): {result.get("phase2_elapsed")}s [parallel]
+Audit events: {len(result["audit_log"])}
+
+Full 11-section memo follows in {total} part(s).
+"""
+
+    extra_messages = [
+        {
+            "content": f"[Blind Review Memo — part {index}/{total}]\n\n{chunk}",
+            "mentions": [],
+        }
+        for index, chunk in enumerate(chunks, start=1)
+    ]
+    extra_messages.append(
+        {
+            "content": (
+                f"Human review required for {ticker}. "
+                "Reply @BandAlpha Chair approve to approve, or "
+                "@BandAlpha Chair request revision: <comment> to request changes."
+            ),
+            "mentions": [get_band_user_handle()],
+        }
+    )
+
+    return build_reply(header, [get_band_user_handle()], extra_messages=extra_messages)
 
 
 def build_dispatch_response(msg) -> dict:
@@ -194,6 +264,10 @@ def build_response(msg):
     if is_approval_message(text):
         print("[ChairAgent] mode selected: human_approval")
         return build_approval_response(msg)
+
+    if is_full_blind_message(text):
+        print("[ChairAgent] mode selected: full_blind")
+        return build_full_blind_response(msg)
 
     if is_parallel_blind_message(text):
         print("[ChairAgent] mode selected: parallel_blind")

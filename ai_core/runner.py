@@ -1,3 +1,5 @@
+import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any, Optional
 
 from ai_core.data_providers.evidence_builder import build_evidence_pack
@@ -13,6 +15,7 @@ from ai_core.agents import (
     run_risk_agent,
     run_evaluator_agent,
     run_memo_agent,
+    _apply_bull_rebuttal,
 )
 from ai_core.case_state_store import append_audit_event, create_or_reset_case, save_case_state
 from ai_core.schemas import AgentMessage, CaseState
@@ -422,7 +425,19 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
         },
     )
 
-    bull_first_pass = run_bull_first_pass_agent(evidence_pack)
+    # ── Phase 1: Truly parallel blind first passes ─────────────────────────
+    # Bull and Bear each see only the Evidence Pack — no cross-contamination.
+    print("[BlindReview] Phase 1 — BullAgent + BearAgent running in parallel (no cross-contamination)...")
+    t0 = time.monotonic()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        bull_fp_future = executor.submit(run_bull_first_pass_agent, evidence_pack)
+        bear_fp_future = executor.submit(run_bear_first_pass_agent, evidence_pack)
+        bull_first_pass = bull_fp_future.result()
+        bear_first_pass = bear_fp_future.result()
+    phase1_elapsed = round(time.monotonic() - t0, 2)
+    print(f"[BlindReview] Phase 1 done in {phase1_elapsed}s")
+
+    # Persist sequentially after both complete to avoid race conditions on case_state.
     case_state["bull_first_pass"] = bull_first_pass
     case_state["bull_output"] = bull_first_pass
     case_state["blind_review_status"] = "bull_first_pass_completed"
@@ -440,7 +455,6 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
         },
     )
 
-    bear_first_pass = run_bear_first_pass_agent(evidence_pack)
     case_state["bear_first_pass"] = bear_first_pass
     case_state["bear_output"] = bear_first_pass
     case_state["blind_review_status"] = "bear_first_pass_completed"
@@ -465,16 +479,27 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
             "agent": "ChairAgent",
             "action": "rebuttal_exchange_started",
             "target_agent": "BullAgent,BearAgent",
-            "summary": "Blind first-pass outputs completed; rebuttal exchange started.",
+            "summary": "Blind first-pass outputs disclosed; rebuttal exchange started.",
             "evidence_refs": [],
         },
     )
 
-    bull_rebuttal = run_bull_rebuttal_agent(
-        evidence_pack,
-        bull_first_pass,
-        bear_first_pass,
-    )
+    # ── Phase 2: Truly parallel rebuttal exchange ──────────────────────────
+    # Both agents now see each other's first-pass output and respond simultaneously.
+    print("[BlindReview] Phase 2 — Bull + Bear rebuttals running in parallel (both see first-pass outputs)...")
+    t1 = time.monotonic()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        bull_rb_future = executor.submit(
+            run_bull_rebuttal_agent, evidence_pack, bull_first_pass, bear_first_pass
+        )
+        bear_rb_future = executor.submit(
+            run_bear_rebuttal_agent, evidence_pack, bull_first_pass, bear_first_pass
+        )
+        bull_rebuttal = bull_rb_future.result()
+        bear_rebuttal = bear_rb_future.result()
+    phase2_elapsed = round(time.monotonic() - t1, 2)
+    print(f"[BlindReview] Phase 2 done in {phase2_elapsed}s")
+
     case_state["bull_rebuttal"] = bull_rebuttal
     case_state = _persist_chair_step(
         case_state,
@@ -483,15 +508,14 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
             "action": "bull_rebuttal_completed",
             "target_agent": "RiskAgent",
             "summary": bull_rebuttal["rebuttal_summary"],
-            "evidence_refs": ["E1", "E3", "E5"],
+            "evidence_refs": [
+                ap.get("citation_id")
+                for ap in bull_rebuttal.get("accepted_critiques", [])
+                if ap.get("citation_id")
+            ],
         },
     )
 
-    bear_rebuttal = run_bear_rebuttal_agent(
-        evidence_pack,
-        bull_first_pass,
-        bear_first_pass,
-    )
     case_state["bear_rebuttal"] = bear_rebuttal
     case_state["blind_review_status"] = "rebuttal_exchange_completed"
     case_state = _persist_chair_step(
@@ -501,7 +525,11 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
             "action": "bear_rebuttal_completed",
             "target_agent": "RiskAgent",
             "summary": bear_rebuttal["rebuttal_summary"],
-            "evidence_refs": ["E3", "E4", "E6"],
+            "evidence_refs": [
+                ro.get("citation_id")
+                for ro in bear_rebuttal.get("remaining_objections", [])
+                if ro.get("citation_id")
+            ],
         },
     )
 
@@ -512,19 +540,17 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
             "agent": "ChairAgent",
             "action": "blind_review_completed",
             "target_agent": "RiskAgent",
-            "summary": "Parallel blind review and rebuttal exchange completed.",
+            "summary": (
+                f"Parallel blind review completed. "
+                f"Phase 1 (first passes): {phase1_elapsed}s | "
+                f"Phase 2 (rebuttals): {phase2_elapsed}s."
+            ),
             "evidence_refs": evidence_refs,
         },
     )
 
-    risk_bull_context = {
-        **bull_first_pass,
-        "rebuttal": bull_rebuttal,
-    }
-    risk_bear_context = {
-        **bear_first_pass,
-        "rebuttal": bear_rebuttal,
-    }
+    risk_bull_context = {**bull_first_pass, "rebuttal": bull_rebuttal}
+    risk_bear_context = {**bear_first_pass, "rebuttal": bear_rebuttal}
     risk_output = run_risk_agent(evidence_pack, risk_bull_context, risk_bear_context)
     case_state["risk_output"] = risk_output
     case_state["status"] = "risk_generated"
@@ -597,7 +623,10 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
             },
         )
 
-    case_state["final_bull_output"] = case_state.get("bull_output_v2") or bull_first_pass
+    # Fold the Phase-2 rebuttal exchange into the final Bull position so the
+    # parallel rebuttal actually shapes the conclusion instead of being cosmetic.
+    post_revision_bull = case_state.get("bull_output_v2") or bull_first_pass
+    case_state["final_bull_output"] = _apply_bull_rebuttal(post_revision_bull, bull_rebuttal)
     final_evaluation_output = run_evaluator_agent(
         evidence_pack,
         case_state["final_bull_output"],
@@ -621,12 +650,22 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
         },
     )
 
+    blind_context = {
+        "bull_first_pass": bull_first_pass,
+        "bear_first_pass": bear_first_pass,
+        "bull_rebuttal": bull_rebuttal,
+        "bear_rebuttal": bear_rebuttal,
+        "phase1_elapsed": phase1_elapsed,
+        "phase2_elapsed": phase2_elapsed,
+    }
+
     memo_output = run_memo_agent(
         evidence_pack,
         case_state["final_bull_output"],
         bear_first_pass,
         risk_output,
         final_evaluation_output,
+        blind_context=blind_context,
     )
     case_state["final_memo"] = memo_output
     case_state["status"] = "memo_generated"
@@ -636,7 +675,7 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
             "agent": "MemoAgent",
             "action": "memo_generated",
             "target_agent": "HumanReviewer",
-            "summary": memo_output["summary"],
+            "summary": f"Parallel blind review memo generated. Total parallel time: {phase1_elapsed + phase2_elapsed:.2f}s.",
             "evidence_refs": evidence_refs,
         },
     )
@@ -658,4 +697,6 @@ def run_parallel_blind_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL")
         "case_state": case_state,
         "final_memo": case_state["final_memo"],
         "audit_log": case_state["audit_log"],
+        "phase1_elapsed": phase1_elapsed,
+        "phase2_elapsed": phase2_elapsed,
     }

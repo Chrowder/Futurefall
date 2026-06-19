@@ -12,15 +12,16 @@ def main():
     result = run_full_research_case()
     case_state = result["case_state"]
 
-    print("\n=== DONE ===")
-    print(f"Initial revision required: {case_state['evaluation_output']['revision_required']}")
+    print(case_state["final_memo"]["summary"])
 
+    print("\n" + "─" * 80)
+    print("WORKFLOW STATUS")
+    print("─" * 80)
+    print(f"  Initial revision required:  {case_state['evaluation_output']['revision_required']}")
     if "evaluation_output_v2" in case_state:
-        print(f"After revision required: {case_state['evaluation_output_v2']['revision_required']}")
-        print(f"Final hallucination risk: {case_state['evaluation_output_v2']['hallucination_risk']}")
-
-    print(f"Final memo generated: {'final_memo' in case_state}")
-    print(f"Human review required: {case_state['final_memo']['human_review_required']}")
+        print(f"  Post-revision required:     {case_state['evaluation_output_v2']['revision_required']}")
+        print(f"  Final hallucination risk:   {case_state['evaluation_output_v2']['hallucination_risk'].upper()}")
+    print(f"  Human review required:      {case_state['final_memo']['human_review_required']}")
 
 
 if __name__ == "__main__":
