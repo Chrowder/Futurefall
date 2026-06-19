@@ -434,7 +434,7 @@
   ],
   "audit_log": [
     {
-      "timestamp": "2026-06-18T01:08:17.541399+00:00",
+      "timestamp": "2026-06-18T01:55:37.766580+00:00",
       "agent": "ChairAgent",
       "action": "case_created",
       "target_agent": "DataStewardAgent",
@@ -442,7 +442,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-18T01:08:17.541879+00:00",
+      "timestamp": "2026-06-18T01:55:37.767308+00:00",
       "agent": "DataStewardAgent",
       "action": "evidence_pack_ready",
       "target_agent": "BullAgent",
@@ -457,7 +457,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:08:17.542250+00:00",
+      "timestamp": "2026-06-18T01:55:37.768464+00:00",
       "agent": "BullAgent",
       "action": "bull_generated",
       "target_agent": "BearAgent",
@@ -470,7 +470,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:08:17.542674+00:00",
+      "timestamp": "2026-06-18T01:55:37.769181+00:00",
       "agent": "BearAgent",
       "action": "bear_generated",
       "target_agent": "RiskAgent",
@@ -481,7 +481,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:08:17.543401+00:00",
+      "timestamp": "2026-06-18T01:55:37.769906+00:00",
       "agent": "RiskAgent",
       "action": "risk_generated",
       "target_agent": "EvaluatorAgent",
@@ -493,7 +493,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:08:17.543871+00:00",
+      "timestamp": "2026-06-18T01:55:37.770710+00:00",
       "agent": "EvaluatorAgent",
       "action": "evaluation_completed",
       "target_agent": "BullAgent",
@@ -501,7 +501,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-18T01:08:17.544542+00:00",
+      "timestamp": "2026-06-18T01:55:37.771354+00:00",
       "agent": "EvaluatorAgent",
       "action": "revision_requested",
       "target_agent": "BullAgent",
@@ -511,7 +511,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:08:17.545272+00:00",
+      "timestamp": "2026-06-18T01:55:37.772026+00:00",
       "agent": "BullAgent",
       "action": "bull_revised",
       "target_agent": "EvaluatorAgent",
@@ -524,7 +524,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:08:17.546153+00:00",
+      "timestamp": "2026-06-18T01:55:37.772844+00:00",
       "agent": "EvaluatorAgent",
       "action": "final_evaluation_completed",
       "target_agent": "MemoAgent",
@@ -532,7 +532,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-18T01:08:17.547084+00:00",
+      "timestamp": "2026-06-18T01:55:37.774746+00:00",
       "agent": "MemoAgent",
       "action": "memo_generated",
       "target_agent": "HumanReviewer",
@@ -547,7 +547,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:08:17.548747+00:00",
+      "timestamp": "2026-06-18T01:55:37.776026+00:00",
       "agent": "ChairAgent",
       "action": "human_review_pending",
       "target_agent": "HumanReviewer",

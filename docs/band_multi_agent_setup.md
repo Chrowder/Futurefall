@@ -75,6 +75,50 @@ Then mention ChairAgent in Band with:
 
 ChairAgent starts by mentioning `BAND_DATA_STEWARD_HANDLE`. Each remote agent then saves deterministic local output, appends an audit event, and mentions the next configured agent handle.
 
+## Human Approval
+
+After the final memo is ready, ChairAgent can record a lightweight human decision:
+
+```text
+@BandAlpha Chair approve
+@BandAlpha Chair request revision: make the memo more concise
+```
+
+Approval sets `human_status` to `approved`. A revision request sets `human_status` to `revision_requested`, stores the comment, and appends the decision to the audit log.
+
+## Audit Report
+
+Export the current mock case audit report with:
+
+```bash
+python -m ai_core.export_audit_report
+```
+
+This writes `ai_core/audit_report.json` with workflow status, human status, audit events, initial/final evaluations, final memo summary, and the research-support disclaimer.
+
+## Optional LLM Mode
+
+BullAgent, BearAgent, RiskAgent, and MemoAgent can use sponsor-provided OpenAI-compatible APIs while keeping deterministic structured citations and the rule-based EvaluatorAgent. The demo defaults to AI/ML API for BullAgent, BearAgent, and MemoAgent, and Featherless AI for RiskAgent:
+
+```bash
+export AIMLAPI_API_KEY=your_aimlapi_api_key
+export AIMLAPI_BASE_URL=your_aimlapi_openai_compatible_base_url
+export FEATHERLESS_API_KEY=your_featherless_api_key
+export FEATHERLESS_BASE_URL=your_featherless_openai_compatible_base_url
+export BULL_PROVIDER=aimlapi
+export BULL_MODEL=your_bull_model_id
+export BEAR_PROVIDER=aimlapi
+export BEAR_MODEL=your_bear_model_id
+export RISK_PROVIDER=featherless
+export RISK_MODEL=your_risk_model_id
+export MEMO_PROVIDER=aimlapi
+export MEMO_MODEL=your_memo_model_id
+export USE_LLM_AGENTS=true
+python -m ai_core.check_llm_enabled
+```
+
+Leave `USE_LLM_AGENTS=false` for the stable deterministic demo path. If any provider key, base URL, or agent model is missing, that provider-backed agent falls back to deterministic output. DataStewardAgent remains deterministic and EvaluatorAgent remains rule-based.
+
 ## Notes
 
 - These wrappers do not add shared Band room state yet.
