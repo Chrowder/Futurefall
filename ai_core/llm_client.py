@@ -6,6 +6,12 @@ from ai_core.llm_clients.openai_compatible_client import generate_text as genera
 
 load_local_env()
 
+# Legacy compatibility wrapper.
+#
+# Current routed agent code uses ai_core.llm_clients.openai_compatible_client
+# directly so Bull/Bear/Risk/Memo can target sponsor-provided OpenAI-compatible
+# providers. Keep this module for older scripts that import ai_core.llm_client.
+
 DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
 DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1"
 
