@@ -26,8 +26,14 @@ AGENTS = [
 
 def configured_agents() -> list[tuple[str, str, object]]:
     available = []
+    seen_config_keys = set()
 
     for agent_config_key, agent_name, response_builder in AGENTS:
+        if agent_config_key in seen_config_keys:
+            print(f"Skipping duplicate config key: {agent_config_key}")
+            continue
+        seen_config_keys.add(agent_config_key)
+
         try:
             load_agent_config(agent_config_key)
         except Exception as exc:
@@ -41,6 +47,7 @@ def configured_agents() -> list[tuple[str, str, object]]:
 async def main() -> None:
     load_band_environment()
     agents = configured_agents()
+    tasks = []
 
     if not agents:
         print("No BandAlpha multi-agent credentials found in agent_config.yaml.")
@@ -48,13 +55,25 @@ async def main() -> None:
         return
 
     print(f"Launching {len(agents)} BandAlpha remote agent(s).")
-    await asyncio.gather(
-        *(
-            run_remote_agent(agent_config_key, agent_name, response_builder)
+    try:
+        tasks = [
+            asyncio.create_task(
+                run_remote_agent(agent_config_key, agent_name, response_builder),
+                name=agent_name,
+            )
             for agent_config_key, agent_name, response_builder in agents
-        )
-    )
+        ]
+        await asyncio.gather(*tasks)
+    except asyncio.CancelledError:
+        print("Shutting down BandAlpha agents...")
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        raise
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Shutting down BandAlpha agents...")

@@ -1,6 +1,12 @@
 {
   "case_id": "AAPL-001",
   "ticker": "AAPL",
+  "parallel_blind_review": false,
+  "blind_review_status": null,
+  "bull_first_pass": null,
+  "bear_first_pass": null,
+  "bull_rebuttal": null,
+  "bear_rebuttal": null,
   "case_state_path": "/Users/christinaxu/Desktop/Futurefall/ai_core/cases/AAPL-001.json",
   "messages": [
     {
@@ -18,37 +24,55 @@
             "citation_id": "E1",
             "claim": "FY26Q2 revenue was $96.4B, YoY +4.2%; services revenue was $26.8B, YoY +11.5%.",
             "source": "STUB-10Q",
-            "date": "2026-05-02"
+            "date": "2026-05-02",
+            "provider": "stub",
+            "source_url": null,
+            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
           },
           {
             "citation_id": "E2",
             "claim": "Gross margin was 46.9%; services gross margin was 74.1%.",
             "source": "STUB-10Q",
-            "date": "2026-05-02"
+            "date": "2026-05-02",
+            "provider": "stub",
+            "source_url": null,
+            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
           },
           {
             "citation_id": "E3",
             "claim": "Greater China revenue was $15.1B, YoY -8.3%.",
             "source": "STUB-10Q",
-            "date": "2026-05-02"
+            "date": "2026-05-02",
+            "provider": "stub",
+            "source_url": null,
+            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
           },
           {
             "citation_id": "E4",
             "claim": "The company announced a new $110B buyback authorization.",
             "source": "STUB-Company Announcement",
-            "date": "2026-05-02"
+            "date": "2026-05-02",
+            "provider": "stub",
+            "source_url": null,
+            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
           },
           {
             "citation_id": "E5",
             "claim": "Apple Intelligence 2 adoption reached 61% on eligible devices after iOS 20 release.",
             "source": "STUB-News",
-            "date": "2026-04-18"
+            "date": "2026-04-18",
+            "provider": "stub",
+            "source_url": null,
+            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
           },
           {
             "citation_id": "E6",
             "claim": "Supply chain data shows FY26H2 iPhone shipment estimate down 5%.",
             "source": "STUB-Supply Chain Research",
-            "date": "2026-05-20"
+            "date": "2026-05-20",
+            "provider": "stub",
+            "source_url": null,
+            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
           }
         ]
       },
@@ -434,7 +458,7 @@
   ],
   "audit_log": [
     {
-      "timestamp": "2026-06-18T01:55:37.766580+00:00",
+      "timestamp": "2026-06-19T03:04:12.364096+00:00",
       "agent": "ChairAgent",
       "action": "case_created",
       "target_agent": "DataStewardAgent",
@@ -442,7 +466,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-18T01:55:37.767308+00:00",
+      "timestamp": "2026-06-19T03:04:12.364696+00:00",
       "agent": "DataStewardAgent",
       "action": "evidence_pack_ready",
       "target_agent": "BullAgent",
@@ -457,7 +481,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:55:37.768464+00:00",
+      "timestamp": "2026-06-19T03:04:12.369109+00:00",
       "agent": "BullAgent",
       "action": "bull_generated",
       "target_agent": "BearAgent",
@@ -470,7 +494,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:55:37.769181+00:00",
+      "timestamp": "2026-06-19T03:04:12.376253+00:00",
       "agent": "BearAgent",
       "action": "bear_generated",
       "target_agent": "RiskAgent",
@@ -481,7 +505,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:55:37.769906+00:00",
+      "timestamp": "2026-06-19T03:04:12.382198+00:00",
       "agent": "RiskAgent",
       "action": "risk_generated",
       "target_agent": "EvaluatorAgent",
@@ -493,7 +517,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:55:37.770710+00:00",
+      "timestamp": "2026-06-19T03:04:12.384411+00:00",
       "agent": "EvaluatorAgent",
       "action": "evaluation_completed",
       "target_agent": "BullAgent",
@@ -501,7 +525,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-18T01:55:37.771354+00:00",
+      "timestamp": "2026-06-19T03:04:12.385166+00:00",
       "agent": "EvaluatorAgent",
       "action": "revision_requested",
       "target_agent": "BullAgent",
@@ -511,7 +535,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:55:37.772026+00:00",
+      "timestamp": "2026-06-19T03:04:12.386544+00:00",
       "agent": "BullAgent",
       "action": "bull_revised",
       "target_agent": "EvaluatorAgent",
@@ -524,7 +548,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:55:37.772844+00:00",
+      "timestamp": "2026-06-19T03:04:12.387873+00:00",
       "agent": "EvaluatorAgent",
       "action": "final_evaluation_completed",
       "target_agent": "MemoAgent",
@@ -532,7 +556,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-18T01:55:37.774746+00:00",
+      "timestamp": "2026-06-19T03:04:12.398057+00:00",
       "agent": "MemoAgent",
       "action": "memo_generated",
       "target_agent": "HumanReviewer",
@@ -547,7 +571,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-18T01:55:37.776026+00:00",
+      "timestamp": "2026-06-19T03:04:12.399993+00:00",
       "agent": "ChairAgent",
       "action": "human_review_pending",
       "target_agent": "HumanReviewer",

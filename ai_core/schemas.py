@@ -6,6 +6,9 @@ class EvidenceItem(TypedDict):
     claim: str
     source: str
     date: str
+    provider: str
+    source_url: Optional[str]
+    fetched_at: str
 
 
 class EvidencePack(TypedDict):
@@ -30,6 +33,13 @@ class CaseState(TypedDict, total=False):
     case_id: str
     ticker: str
     evidence_pack: EvidencePack
+
+    parallel_blind_review: bool
+    blind_review_status: str
+    bull_first_pass: Dict[str, Any]
+    bear_first_pass: Dict[str, Any]
+    bull_rebuttal: Dict[str, Any]
+    bear_rebuttal: Dict[str, Any]
 
     bull_output: Dict[str, Any]
     bear_output: Dict[str, Any]

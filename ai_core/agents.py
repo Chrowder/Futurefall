@@ -161,6 +161,39 @@ KEY_ASSUMPTION_2: <short assumption>
     return output
 
 
+def run_bull_first_pass_agent(evidence_pack: Dict[str, Any]) -> Dict[str, Any]:
+    output = run_bull_agent(evidence_pack)
+    output["mode"] = "blind_first_pass"
+
+    prompt = f"""Evidence Pack:
+{json.dumps(evidence_pack, indent=2)}
+
+Write a blind first-pass bullish thesis for {evidence_pack["ticker"]}.
+Use only the Evidence Pack. Do not read or infer any BearAgent output.
+Do not provide investment advice.
+Return exactly:
+BULL_THESIS: <one sentence>
+KEY_ASSUMPTION_1: <short assumption>
+KEY_ASSUMPTION_2: <short assumption>
+"""
+    generated = generate_agent_text(
+        "bull",
+        "aimlapi",
+        "You are BullAgent writing an independent blind first-pass view.",
+        prompt,
+    )
+    if not generated:
+        return output
+
+    parsed = parse_labeled_text(generated)
+    output["bull_thesis"] = parsed.get("BULL_THESIS") or first_nonempty_line(generated) or output["bull_thesis"]
+    output["key_assumptions"] = [
+        parsed.get("KEY_ASSUMPTION_1") or output["key_assumptions"][0],
+        parsed.get("KEY_ASSUMPTION_2") or output["key_assumptions"][1],
+    ]
+    return output
+
+
 def run_bull_revision_agent(
     evidence_pack: Dict[str, Any],
     bull_output: Dict[str, Any],
@@ -259,6 +292,206 @@ MISSED_RISK: <one missed risk tied to AI adoption or upgrades>
     output["attack_points"][0]["critique"] = parsed.get("E3_CRITIQUE") or output["attack_points"][0]["critique"]
     output["attack_points"][1]["critique"] = parsed.get("E6_CRITIQUE") or output["attack_points"][1]["critique"]
     output["missed_risks"][0]["risk"] = parsed.get("MISSED_RISK") or output["missed_risks"][0]["risk"]
+    return output
+
+
+def run_bear_first_pass_agent(evidence_pack: Dict[str, Any]) -> Dict[str, Any]:
+    output = {
+        "mode": "blind_first_pass",
+        "bear_thesis": (
+            "AAPL's setup faces pressure from Greater China weakness and uncertain iPhone upgrade demand."
+        ),
+        "attack_points": [
+            {
+                "target_claim": "AAPL has a constructive medium-term setup.",
+                "critique": "Greater China revenue declined 8.3% YoY, creating a direct growth headwind.",
+                "citation_id": "E3",
+            },
+            {
+                "target_claim": "AI adoption can drive near-term device demand.",
+                "critique": (
+                    "FY26H2 iPhone shipment estimates are down 5%, so current evidence does not prove "
+                    "an imminent upgrade cycle."
+                ),
+                "citation_id": "E6",
+            },
+        ],
+        "missed_risks": [
+            {
+                "risk": "Apple Intelligence adoption may not convert into measurable iPhone upgrades.",
+                "citation_id": "E5",
+            }
+        ],
+        "confidence": 0.76,
+    }
+
+    prompt = f"""Evidence Pack:
+{json.dumps(evidence_pack, indent=2)}
+
+Write a blind first-pass bearish critique for {evidence_pack["ticker"]}.
+Use only the Evidence Pack. Do not read or infer BullAgent output.
+Do not provide investment advice.
+Return exactly:
+BEAR_THESIS: <one sentence>
+E3_CRITIQUE: <critique tied to Greater China revenue weakness>
+E6_CRITIQUE: <critique tied to iPhone shipment uncertainty>
+MISSED_RISK: <one missed risk tied to AI adoption or upgrades>
+"""
+    generated = generate_agent_text(
+        "bear",
+        "aimlapi",
+        "You are BearAgent writing an independent blind first-pass view.",
+        prompt,
+    )
+    if not generated:
+        return output
+
+    parsed = parse_labeled_text(generated)
+    output["bear_thesis"] = parsed.get("BEAR_THESIS") or first_nonempty_line(generated) or output["bear_thesis"]
+    output["attack_points"][0]["critique"] = parsed.get("E3_CRITIQUE") or output["attack_points"][0]["critique"]
+    output["attack_points"][1]["critique"] = parsed.get("E6_CRITIQUE") or output["attack_points"][1]["critique"]
+    output["missed_risks"][0]["risk"] = parsed.get("MISSED_RISK") or output["missed_risks"][0]["risk"]
+    return output
+
+
+def run_bull_rebuttal_agent(
+    evidence_pack: Dict[str, Any],
+    bull_first_pass: Dict[str, Any],
+    bear_first_pass: Dict[str, Any],
+) -> Dict[str, Any]:
+    output = {
+        "mode": "rebuttal",
+        "rebuttal_summary": (
+            "BullAgent accepts that iPhone demand evidence is not yet decisive, but maintains that "
+            "services growth, high services margin, and buybacks support a constructive setup."
+        ),
+        "accepted_critiques": [
+            {
+                "critique": "Greater China weakness should temper the growth narrative.",
+                "citation_id": "E3",
+            },
+            {
+                "critique": "AI adoption does not yet prove near-term iPhone demand acceleration.",
+                "citation_id": "E5",
+            },
+        ],
+        "rejected_critiques": [
+            {
+                "critique": "Services growth and buybacks are not enough to matter.",
+                "reason": "The Evidence Pack supports both services strength and shareholder returns.",
+                "citation_id": "E1",
+            }
+        ],
+        "revised_assumptions": [
+            "Services growth remains a key support.",
+            "AI adoption may improve engagement, but demand impact requires more evidence.",
+            "Greater China weakness remains an important offset.",
+        ],
+    }
+
+    prompt = f"""Evidence Pack:
+{json.dumps(evidence_pack, indent=2)}
+
+Bull first pass:
+{json.dumps(bull_first_pass, indent=2)}
+
+Bear first pass:
+{json.dumps(bear_first_pass, indent=2)}
+
+Write BullAgent's rebuttal after seeing both blind first-pass outputs.
+Use only the provided evidence and agent outputs. Do not provide investment advice.
+Return exactly:
+REBUTTAL_SUMMARY: <one sentence>
+ACCEPTED_CRITIQUE_1: <short critique accepted>
+REVISED_ASSUMPTION_1: <short revised assumption>
+"""
+    generated = generate_agent_text(
+        "bull",
+        "aimlapi",
+        "You are BullAgent writing a concise rebuttal.",
+        prompt,
+    )
+    if not generated:
+        return output
+
+    parsed = parse_labeled_text(generated)
+    output["rebuttal_summary"] = (
+        parsed.get("REBUTTAL_SUMMARY") or first_nonempty_line(generated) or output["rebuttal_summary"]
+    )
+    if parsed.get("ACCEPTED_CRITIQUE_1"):
+        output["accepted_critiques"][0]["critique"] = parsed["ACCEPTED_CRITIQUE_1"]
+    if parsed.get("REVISED_ASSUMPTION_1"):
+        output["revised_assumptions"][0] = parsed["REVISED_ASSUMPTION_1"]
+    return output
+
+
+def run_bear_rebuttal_agent(
+    evidence_pack: Dict[str, Any],
+    bull_first_pass: Dict[str, Any],
+    bear_first_pass: Dict[str, Any],
+) -> Dict[str, Any]:
+    output = {
+        "mode": "rebuttal",
+        "rebuttal_summary": (
+            "BearAgent concedes that services and buybacks are real supports, but maintains that "
+            "China weakness and shipment cuts leave the demand recovery unproven."
+        ),
+        "remaining_objections": [
+            {
+                "objection": "Greater China revenue decline remains a material offset.",
+                "citation_id": "E3",
+            },
+            {
+                "objection": "Shipment estimates still point to uncertain iPhone demand.",
+                "citation_id": "E6",
+            },
+        ],
+        "conceded_points": [
+            {
+                "point": "Services revenue growth and high services gross margin support profitability quality.",
+                "citation_id": "E1",
+            },
+            {
+                "point": "The buyback authorization supports shareholder returns.",
+                "citation_id": "E4",
+            },
+        ],
+        "confidence": 0.74,
+    }
+
+    prompt = f"""Evidence Pack:
+{json.dumps(evidence_pack, indent=2)}
+
+Bull first pass:
+{json.dumps(bull_first_pass, indent=2)}
+
+Bear first pass:
+{json.dumps(bear_first_pass, indent=2)}
+
+Write BearAgent's rebuttal after seeing both blind first-pass outputs.
+Use only the provided evidence and agent outputs. Do not provide investment advice.
+Return exactly:
+REBUTTAL_SUMMARY: <one sentence>
+REMAINING_OBJECTION_1: <short remaining objection>
+CONCEDED_POINT_1: <short conceded point>
+"""
+    generated = generate_agent_text(
+        "bear",
+        "aimlapi",
+        "You are BearAgent writing a concise rebuttal.",
+        prompt,
+    )
+    if not generated:
+        return output
+
+    parsed = parse_labeled_text(generated)
+    output["rebuttal_summary"] = (
+        parsed.get("REBUTTAL_SUMMARY") or first_nonempty_line(generated) or output["rebuttal_summary"]
+    )
+    if parsed.get("REMAINING_OBJECTION_1"):
+        output["remaining_objections"][0]["objection"] = parsed["REMAINING_OBJECTION_1"]
+    if parsed.get("CONCEDED_POINT_1"):
+        output["conceded_points"][0]["point"] = parsed["CONCEDED_POINT_1"]
     return output
 
 

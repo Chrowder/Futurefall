@@ -1,16 +1,17 @@
 from ai_core.band_agents.common import (
     build_reply,
+    get_dispatch_evidence_pack,
     get_env_handle,
     load_dispatch_case_state,
     main_for,
     persist_dispatch_step,
 )
-from ai_core.sample_case import sample_evidence_pack
 
 
 def build_response(msg):
     case_state = load_dispatch_case_state()
-    case_state["evidence_pack"] = sample_evidence_pack
+    evidence_pack = get_dispatch_evidence_pack(case_state)
+    case_state["evidence_pack"] = evidence_pack
     case_state["status"] = "evidence_pack_ready"
     case_state = persist_dispatch_step(
         case_state,
@@ -20,12 +21,12 @@ def build_response(msg):
             "target_agent": "BullAgent",
             "summary": "Prepared the mock Evidence Pack and handed off to BullAgent.",
             "evidence_refs": [
-                item["citation_id"] for item in sample_evidence_pack["evidence_items"]
+                item["citation_id"] for item in evidence_pack["evidence_items"]
             ],
         },
     )
 
-    evidence_items = sample_evidence_pack["evidence_items"]
+    evidence_items = evidence_pack["evidence_items"]
     evidence_text = "\n".join(
         (
             f"- {item['citation_id']}: {item['claim']} "
@@ -38,7 +39,7 @@ def build_response(msg):
 
 Case: {case_state["case_id"]}
 Ticker: {case_state["ticker"]}
-Company: {sample_evidence_pack["company"]}
+Company: {evidence_pack["company"]}
 
 Evidence:
 {evidence_text}

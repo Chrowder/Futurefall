@@ -1,11 +1,17 @@
 {
   "case_id": "AAPL-001",
   "ticker": "AAPL",
-  "workflow_status": "human_revision_requested",
-  "human_status": "revision_requested",
+  "workflow_status": "pending_human_review",
+  "human_status": "pending_review",
+  "parallel_blind_review": false,
+  "blind_review_status": null,
+  "bull_first_pass": null,
+  "bear_first_pass": null,
+  "bull_rebuttal": null,
+  "bear_rebuttal": null,
   "audit_log": [
     {
-      "timestamp": "2026-06-19T02:27:17.233375+00:00",
+      "timestamp": "2026-06-19T03:04:51.367876+00:00",
       "agent": "ChairAgent",
       "action": "case_created",
       "target_agent": "DataStewardAgent",
@@ -13,7 +19,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-19T02:27:17.233913+00:00",
+      "timestamp": "2026-06-19T03:04:51.368376+00:00",
       "agent": "DataStewardAgent",
       "action": "evidence_pack_ready",
       "target_agent": "BullAgent",
@@ -28,7 +34,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-19T02:27:40.457561+00:00",
+      "timestamp": "2026-06-19T03:04:51.378450+00:00",
       "agent": "BullAgent",
       "action": "bull_generated",
       "target_agent": "BearAgent",
@@ -41,22 +47,22 @@
       ]
     },
     {
-      "timestamp": "2026-06-19T02:27:47.337916+00:00",
+      "timestamp": "2026-06-19T03:04:51.383245+00:00",
       "agent": "BearAgent",
       "action": "bear_generated",
       "target_agent": "RiskAgent",
-      "summary": "AAPL's hardware franchise faces deteriorating regional demand and softening iPhone volumes that undercut the bull's reliance on services growth and buybacks to sustain the medium-term setup.",
+      "summary": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
       "evidence_refs": [
         "E3",
         "E6"
       ]
     },
     {
-      "timestamp": "2026-06-19T02:28:03.007852+00:00",
+      "timestamp": "2026-06-19T03:04:51.387251+00:00",
       "agent": "RiskAgent",
       "action": "risk_generated",
       "target_agent": "EvaluatorAgent",
-      "summary": "AAPL's services growth and buyback initiatives face counterbalance risks from declining Greater China revenue and reduced iPhone shipment forecasts, challenging the sustainability of its medium-term growth narrative.",
+      "summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
       "evidence_refs": [
         "E3",
         "E6",
@@ -64,7 +70,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-19T02:28:03.010143+00:00",
+      "timestamp": "2026-06-19T03:04:51.388044+00:00",
       "agent": "EvaluatorAgent",
       "action": "evaluation_completed",
       "target_agent": "BullAgent",
@@ -72,7 +78,7 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-19T02:28:03.012303+00:00",
+      "timestamp": "2026-06-19T03:04:51.389190+00:00",
       "agent": "EvaluatorAgent",
       "action": "revision_requested",
       "target_agent": "BullAgent",
@@ -82,7 +88,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-19T02:28:03.014235+00:00",
+      "timestamp": "2026-06-19T03:04:51.389990+00:00",
       "agent": "BullAgent",
       "action": "bull_revised",
       "target_agent": "EvaluatorAgent",
@@ -95,7 +101,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-19T02:28:03.015595+00:00",
+      "timestamp": "2026-06-19T03:04:51.390777+00:00",
       "agent": "EvaluatorAgent",
       "action": "final_evaluation_completed",
       "target_agent": "MemoAgent",
@@ -103,11 +109,11 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-19T02:28:08.898435+00:00",
+      "timestamp": "2026-06-19T03:04:51.395115+00:00",
       "agent": "MemoAgent",
       "action": "memo_generated",
       "target_agent": "HumanReviewer",
-      "summary": "Apple Inc. shows a mixed medium-term setup: services revenue grew 11.5% YoY with a 74.1% gross margin (E1, E2), and a new $110B buyback (E4) supports shareholder returns, yet hardware demand faces headwinds from an 8.3% YoY decline in Greater China revenue (E3) and a 5% downward revision to FY26H2 iPhone shipment estimates (E6). While Apple Intelligence 2 adoption reached 61% on eligible devices (E5), there is no evidence it translates into near-term device upgrades. The bull thesis, with a calibrated confidence of 0.68, relies on services stability, while the bear case (confidence 0.78) highlights hardware pressures that the services and buyback narrative may not offset. Evaluation confirms high citation coverage and no unsupported claims, and the flagged risks—China weakness, iPhone shipment uncertainty, and unproven AI-driven demand—are well covered. This summary is research support only and not investment advice.",
+      "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
       "evidence_refs": [
         "E1",
         "E2",
@@ -118,7 +124,7 @@
       ]
     },
     {
-      "timestamp": "2026-06-19T02:28:08.903722+00:00",
+      "timestamp": "2026-06-19T03:04:51.396455+00:00",
       "agent": "ChairAgent",
       "action": "human_review_pending",
       "target_agent": "HumanReviewer",
@@ -131,24 +137,6 @@
         "E5",
         "E6"
       ]
-    },
-    {
-      "timestamp": "2026-06-19T02:28:08.907055+00:00",
-      "agent": "HumanReviewer",
-      "action": "human_approved",
-      "target_agent": null,
-      "summary": "Human reviewer approved the final memo.",
-      "evidence_refs": [],
-      "reviewer": "human"
-    },
-    {
-      "timestamp": "2026-06-19T02:28:08.908466+00:00",
-      "agent": "HumanReviewer",
-      "action": "human_revision_requested",
-      "target_agent": "ChairAgent",
-      "summary": "Human reviewer requested revisions. Comment: Please make the memo more concise.",
-      "evidence_refs": [],
-      "reviewer": "human"
     }
   ],
   "initial_evaluation": {
@@ -197,7 +185,7 @@
     ],
     "revision_reasons": []
   },
-  "final_memo_summary": "Apple Inc. shows a mixed medium-term setup: services revenue grew 11.5% YoY with a 74.1% gross margin (E1, E2), and a new $110B buyback (E4) supports shareholder returns, yet hardware demand faces headwinds from an 8.3% YoY decline in Greater China revenue (E3) and a 5% downward revision to FY26H2 iPhone shipment estimates (E6). While Apple Intelligence 2 adoption reached 61% on eligible devices (E5), there is no evidence it translates into near-term device upgrades. The bull thesis, with a calibrated confidence of 0.68, relies on services stability, while the bear case (confidence 0.78) highlights hardware pressures that the services and buyback narrative may not offset. Evaluation confirms high citation coverage and no unsupported claims, and the flagged risks—China weakness, iPhone shipment uncertainty, and unproven AI-driven demand—are well covered. This summary is research support only and not investment advice.",
+  "final_memo_summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
   "revision_required_initial": true,
   "revision_required_final": false,
   "disclaimer": "This is a research support memo, not investment advice."

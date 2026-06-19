@@ -1,17 +1,18 @@
 from ai_core.agents import run_bear_agent, run_bull_agent, run_risk_agent
 from ai_core.band_agents.common import (
     build_reply,
+    get_dispatch_evidence_pack,
     get_env_handle,
     load_dispatch_case_state,
     main_for,
     persist_dispatch_step,
 )
-from ai_core.sample_case import sample_evidence_pack
 
 
 def build_response(msg):
     case_state = load_dispatch_case_state()
-    evidence_pack = sample_evidence_pack
+    evidence_pack = get_dispatch_evidence_pack(case_state)
+    case_state["evidence_pack"] = evidence_pack
     bull_output = case_state.get("bull_output") or run_bull_agent(evidence_pack)
     bear_output = case_state.get("bear_output") or run_bear_agent(evidence_pack, bull_output)
     risk_output = run_risk_agent(evidence_pack, bull_output, bear_output)

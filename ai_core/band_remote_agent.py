@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 from typing import Any, Dict
 
-from dotenv import load_dotenv
 from thenvoi import Agent
 from thenvoi.config import load_agent_config
 from thenvoi.core.protocols import AgentToolsProtocol
@@ -16,6 +15,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from ai_core.runner import run_full_research_case
+from ai_core.env_config import load_local_env
 
 
 def format_band_response(result: Dict[str, Any]) -> str:
@@ -104,7 +104,7 @@ class BandAlphaAdapter(SimpleAdapter[list[dict]]):
 
 async def main():
     print("Loading environment...")
-    load_dotenv()
+    load_local_env()
 
     print("Loading Band agent config...")
     agent_id, api_key = load_agent_config("bandalpha_ai_core")

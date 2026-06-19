@@ -8,16 +8,17 @@ from ai_core.agents import (
 from ai_core.band_agents.common import (
     build_reply,
     get_band_user_handle,
+    get_dispatch_evidence_pack,
     load_dispatch_case_state,
     main_for,
     persist_dispatch_step,
 )
-from ai_core.sample_case import sample_evidence_pack
 
 
 def build_response(msg):
     case_state = load_dispatch_case_state()
-    evidence_pack = sample_evidence_pack
+    evidence_pack = get_dispatch_evidence_pack(case_state)
+    case_state["evidence_pack"] = evidence_pack
     bull_output = (
         case_state.get("final_bull_output")
         or case_state.get("bull_output_v2")

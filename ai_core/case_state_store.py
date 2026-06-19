@@ -1,11 +1,10 @@
-import copy
 import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict
 
-from ai_core.sample_case import sample_evidence_pack
+from ai_core.data_providers.evidence_builder import build_evidence_pack
 
 CASES_DIR = Path(__file__).resolve().parent / "cases"
 
@@ -15,15 +14,20 @@ def get_case_path(case_id: str) -> Path:
 
 
 def _new_case_state(case_id: str, ticker: str = "AAPL") -> Dict[str, Any]:
-    evidence_pack = copy.deepcopy(sample_evidence_pack)
+    evidence_pack = build_evidence_pack(ticker=ticker, provider="stub")
     evidence_pack["case_id"] = case_id
-    evidence_pack["ticker"] = ticker
 
     return {
         "case_id": case_id,
         "ticker": ticker,
         "status": "created",
         "evidence_pack": evidence_pack,
+        "parallel_blind_review": False,
+        "blind_review_status": None,
+        "bull_first_pass": None,
+        "bear_first_pass": None,
+        "bull_rebuttal": None,
+        "bear_rebuttal": None,
         "bull_output": None,
         "bear_output": None,
         "risk_output": None,

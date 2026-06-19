@@ -100,6 +100,12 @@ def main():
     export_payload = {
         "case_id": case_state["case_id"],
         "ticker": case_state["ticker"],
+        "parallel_blind_review": chair_case_state.get("parallel_blind_review", False),
+        "blind_review_status": chair_case_state.get("blind_review_status"),
+        "bull_first_pass": chair_case_state.get("bull_first_pass"),
+        "bear_first_pass": chair_case_state.get("bear_first_pass"),
+        "bull_rebuttal": chair_case_state.get("bull_rebuttal"),
+        "bear_rebuttal": chair_case_state.get("bear_rebuttal"),
         "case_state_path": str(get_case_path(chair_case_state["case_id"])),
         "messages": messages,
         "frontend_timeline": build_frontend_timeline(messages),

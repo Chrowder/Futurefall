@@ -8,6 +8,7 @@ from ai_core.agents import (
 from ai_core.band_agents.common import (
     build_reply,
     bullet_lines,
+    get_dispatch_evidence_pack,
     get_env_handle,
     load_dispatch_case_state,
     looks_like_revision_request,
@@ -15,12 +16,12 @@ from ai_core.band_agents.common import (
     optional_env_handle,
     persist_dispatch_step,
 )
-from ai_core.sample_case import sample_evidence_pack
 
 
 def build_response(msg):
     case_state = load_dispatch_case_state()
-    evidence_pack = sample_evidence_pack
+    evidence_pack = get_dispatch_evidence_pack(case_state)
+    case_state["evidence_pack"] = evidence_pack
 
     if looks_like_revision_request(msg):
         bull_output = case_state.get("bull_output") or run_bull_agent(evidence_pack)

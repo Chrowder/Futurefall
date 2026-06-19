@@ -75,6 +75,23 @@ Then mention ChairAgent in Band with:
 
 ChairAgent starts by mentioning `BAND_DATA_STEWARD_HANDLE`. Each remote agent then saves deterministic local output, appends an audit event, and mentions the next configured agent handle.
 
+## Parallel Blind Review
+
+Run the local parallel blind Bull/Bear workflow with:
+
+```bash
+python -m ai_core.check_parallel_blind_review
+```
+
+In Band, mention ChairAgent with:
+
+```text
+@BandAlpha Chair blind AAPL
+@BandAlpha Chair parallel AAPL
+```
+
+ChairAgent runs a stable internal parallel blind workflow: DataStewardAgent prepares evidence, BullAgent and BearAgent produce independent first-pass views, both agents exchange rebuttals, then RiskAgent, EvaluatorAgent, and MemoAgent complete the flow.
+
 ## Human Approval
 
 After the final memo is ready, ChairAgent can record a lightweight human decision:
@@ -95,6 +112,24 @@ python -m ai_core.export_audit_report
 ```
 
 This writes `ai_core/audit_report.json` with workflow status, human status, audit events, initial/final evaluations, final memo summary, and the research-support disclaimer.
+
+## Evidence Providers
+
+The default Evidence Pack is built through the provider layer with deterministic stub data:
+
+```bash
+python -m ai_core.check_evidence_builder
+```
+
+Local code can build a pack directly:
+
+```python
+from ai_core.data_providers.evidence_builder import build_evidence_pack
+
+evidence_pack = build_evidence_pack(ticker="AAPL", provider="stub")
+```
+
+`EVIDENCE_PROVIDER=stub` keeps the demo stable. Optional provider hooks exist for `yfinance` and `sec`, but the deterministic agents and evaluator are calibrated against the stub E1-E6 Evidence Pack.
 
 ## Optional LLM Mode
 
