@@ -1,9 +1,9 @@
 from ai_core.band_agents.common import (
     build_reply,
     get_dispatch_evidence_pack,
-    get_env_handle,
     load_dispatch_case_state,
     main_for,
+    optional_env_handle,
     persist_dispatch_step,
 )
 
@@ -46,7 +46,7 @@ Evidence:
 
 BullAgent please generate Bull v1 from this Evidence Pack, then hand off to BearAgent.
 """
-    return build_reply(content, [get_env_handle("BAND_BULL_HANDLE")])
+    return build_reply(content, [optional_env_handle("BAND_BULL_HANDLE")])
 
 
 if __name__ == "__main__":

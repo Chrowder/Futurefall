@@ -5,13 +5,13 @@ from ai_core.band_agents.common import (
     DEFAULT_TICKER,
     build_reply,
     get_band_user_handle,
-    get_env_handle,
     get_incoming_text,
     main_for,
+    optional_env_handle,
     persist_dispatch_step,
 )
 from ai_core.case_state_store import approve_case, create_or_reset_case, request_case_revision
-from ai_core.runner import run_chair_workflow, run_parallel_blind_workflow
+from ai_core.runner import run_chair_workflow
 
 
 def is_approval_message(text: str) -> bool:
@@ -77,35 +77,48 @@ Human review required. Reply @BandAlpha Chair approve to approve, or @BandAlpha 
 
 
 def build_parallel_blind_response() -> dict:
-    result = run_parallel_blind_workflow()
-    case_state = result["case_state"]
-    final_memo = result["final_memo"]
-    initial_eval = case_state["evaluation_output"]
-    final_eval = case_state["final_evaluation_output"]
+    case_state = create_or_reset_case(DEFAULT_CASE_ID, DEFAULT_TICKER)
+    case_state["parallel_blind_review"] = True
+    case_state["blind_review_status"] = "dispatched"
+    case_state["status"] = "blind_review_dispatched"
+    case_state = persist_dispatch_step(
+        case_state,
+        {
+            "agent": "ChairAgent",
+            "action": "blind_review_dispatched",
+            "target_agent": "BullAgent,BearAgent",
+            "summary": "ChairAgent dispatched a Band-native blind first pass.",
+            "evidence_refs": [],
+        },
+    )
 
-    content = f"""Parallel blind review completed.
+    ticker = case_state["ticker"]
+    case_id = case_state["case_id"]
+    dispatch_content = f"""BullAgent and BearAgent please start a parallel blind first pass.
 
-Case ID: {case_state["case_id"]}
-Ticker: {case_state["ticker"]}
-Workflow status: {case_state["status"]}
-Blind review status: {case_state.get("blind_review_status")}
-Initial revision required: {initial_eval.get("revision_required")}
-Final hallucination risk: {final_eval.get("hallucination_risk")}
-Audit events: {len(result["audit_log"])}
-
-Bull: {case_state["bull_first_pass"].get("bull_thesis")}
-
-Bear: {case_state["bear_first_pass"].get("bear_thesis")}
-
-Memo:
-{final_memo.get("summary")}
-
-Disclaimer:
-{final_memo.get("disclaimer")}
-
-Human review required. Reply @BandAlpha Chair approve to approve, or @BandAlpha Chair request revision: <comment> to request changes.
+case_id: {case_id}
+ticker: {ticker}
+mode: blind_first_pass
+instruction: independently analyze the Evidence Pack without seeing the other side's output.
 """
-    return build_reply(content, [get_band_user_handle()])
+
+    content = (
+        f"Parallel blind review started for {ticker}. "
+        "Dispatching BullAgent and BearAgent."
+    )
+    return build_reply(
+        content,
+        [get_band_user_handle()],
+        extra_messages=[
+            {
+                "content": dispatch_content,
+                "mentions": [
+                    optional_env_handle("BAND_BULL_HANDLE"),
+                    optional_env_handle("BAND_BEAR_HANDLE"),
+                ],
+            }
+        ],
+    )
 
 
 def build_dispatch_response() -> dict:
@@ -129,7 +142,7 @@ Ticker: {case_state["ticker"]}
 
 After completion, hand off to BullAgent with the evidence pack summary.
 """
-    return build_reply(content, [get_env_handle("BAND_DATA_STEWARD_HANDLE")])
+    return build_reply(content, [optional_env_handle("BAND_DATA_STEWARD_HANDLE")])
 
 
 def build_approval_response() -> dict:

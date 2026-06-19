@@ -8,9 +8,9 @@ from ai_core.band_agents.common import (
     build_reply,
     format_scalar,
     get_dispatch_evidence_pack,
-    get_env_handle,
     load_dispatch_case_state,
     main_for,
+    optional_env_handle,
     persist_dispatch_step,
 )
 
@@ -87,9 +87,9 @@ def build_response(msg):
     ) or "- None"
 
     revise_note = ""
-    mentions = [get_env_handle("BAND_MEMO_HANDLE")]
+    mentions = [optional_env_handle("BAND_MEMO_HANDLE")]
     if evaluation_output.get("revision_required"):
-        mentions = [get_env_handle("BAND_BULL_HANDLE")]
+        mentions = [optional_env_handle("BAND_BULL_HANDLE")]
         revise_note = "\nBullAgent please revise the unsupported claim, then hand back to EvaluatorAgent."
     else:
         revise_note = "\nMemoAgent please produce the final research support memo."

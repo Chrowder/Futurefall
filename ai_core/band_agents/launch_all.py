@@ -55,21 +55,29 @@ async def main() -> None:
         return
 
     print(f"Launching {len(agents)} BandAlpha remote agent(s).")
+    tasks = [
+        asyncio.create_task(
+            run_remote_agent(agent_config_key, agent_name, response_builder),
+            name=agent_name,
+        )
+        for agent_config_key, agent_name, response_builder in agents
+    ]
+
     try:
-        tasks = [
-            asyncio.create_task(
-                run_remote_agent(agent_config_key, agent_name, response_builder),
-                name=agent_name,
-            )
-            for agent_config_key, agent_name, response_builder in agents
-        ]
         await asyncio.gather(*tasks)
-    except asyncio.CancelledError:
+    except (asyncio.CancelledError, KeyboardInterrupt):
         print("Shutting down BandAlpha agents...")
         for task in tasks:
             task.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)
         raise
+    finally:
+        pending_tasks = [task for task in tasks if not task.done()]
+        if pending_tasks:
+            print("Shutting down BandAlpha agents...")
+            for task in pending_tasks:
+                task.cancel()
+            await asyncio.gather(*pending_tasks, return_exceptions=True)
 
 
 if __name__ == "__main__":

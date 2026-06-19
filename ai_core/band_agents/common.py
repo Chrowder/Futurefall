@@ -22,9 +22,12 @@ from ai_core.data_providers.evidence_builder import build_evidence_pack
 
 DEFAULT_CASE_ID = "AAPL-001"
 DEFAULT_TICKER = "AAPL"
+MAX_BAND_MESSAGE_CHARS = 2400
 
 BandReply = str | dict[str, Any]
 ResponseBuilder = Callable[[PlatformMessage], BandReply]
+_PRIMARY_REPLY_SENT_MESSAGE_IDS: set[str] = set()
+_EXTRA_HANDOFF_SENT_MESSAGE_IDS: set[str] = set()
 
 
 def load_band_environment() -> None:
@@ -63,11 +66,95 @@ def sanitize_mentions(mentions: list[str] | None = None) -> list[str]:
     return [get_band_user_handle()]
 
 
-def build_reply(content: str, mentions: list[str] | None = None) -> dict[str, Any]:
-    return {
+def normalize_handle(handle: str) -> str:
+    return str(handle or "").strip().lstrip("@").lower()
+
+
+def handle_in_participants(handle: str, participants_msg: str | None) -> bool:
+    if not participants_msg:
+        return False
+
+    normalized_handle = normalize_handle(handle)
+    normalized_participants = normalize_handle(participants_msg)
+    return normalized_handle in normalized_participants
+
+
+def trim_band_message(content: Any, max_chars: int = MAX_BAND_MESSAGE_CHARS) -> str:
+    text = str(content or "").strip()
+    if len(text) <= max_chars:
+        return text
+
+    return text[: max_chars - 80].rstrip() + "\n\n[truncated for Band room readability]"
+
+
+def safe_mentions_for_room(
+    mentions: list[str] | None,
+    participants_msg: str | None,
+) -> tuple[list[str], bool]:
+    requested_mentions = sanitize_mentions(mentions)
+    if not participants_msg:
+        return requested_mentions, False
+
+    user_handle = get_band_user_handle()
+    safe_mentions = []
+    missing_target = False
+
+    for mention in requested_mentions:
+        if normalize_handle(mention) == normalize_handle(user_handle):
+            safe_mentions.append(mention)
+            continue
+
+        if handle_in_participants(mention, participants_msg):
+            safe_mentions.append(mention)
+            continue
+
+        missing_target = True
+
+    if not safe_mentions:
+        safe_mentions = [user_handle]
+
+    return safe_mentions, missing_target
+
+
+def prepare_outgoing_message(
+    content: Any,
+    mentions: list[str] | None,
+    participants_msg: str | None,
+) -> tuple[str, list[str], bool]:
+    safe_mentions, missing_target = safe_mentions_for_room(mentions, participants_msg)
+    safe_content = trim_band_message(content)
+
+    if missing_target:
+        warning = (
+            "Next agent is not present in this room. "
+            "Please add it to continue handoff."
+        )
+        if warning not in safe_content:
+            safe_content = trim_band_message(f"{safe_content}\n\n{warning}")
+
+    return safe_content, safe_mentions, missing_target
+
+
+def build_reply(
+    content: str,
+    mentions: list[str] | None = None,
+    extra_messages: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    reply = {
         "content": content,
         "mentions": sanitize_mentions(mentions),
     }
+
+    if extra_messages:
+        reply["extra_messages"] = [
+            {
+                "content": str(message.get("content", "")),
+                "mentions": sanitize_mentions(message.get("mentions")),
+            }
+            for message in extra_messages
+        ]
+
+    return reply
 
 
 def resolve_reply(reply: BandReply) -> tuple[str, list[str]]:
@@ -77,6 +164,22 @@ def resolve_reply(reply: BandReply) -> tuple[str, list[str]]:
         return content, mentions
 
     return str(reply), sanitize_mentions()
+
+
+def resolve_extra_messages(reply: BandReply) -> list[tuple[str, list[str]]]:
+    if not isinstance(reply, dict):
+        return []
+
+    messages = []
+    for message in reply.get("extra_messages", []) or []:
+        if not isinstance(message, dict):
+            continue
+        content = str(message.get("content", "")).strip()
+        if not content:
+            continue
+        messages.append((content, sanitize_mentions(message.get("mentions"))))
+
+    return messages
 
 
 def get_incoming_text(msg: PlatformMessage) -> str:
@@ -91,9 +194,22 @@ def get_incoming_text(msg: PlatformMessage) -> str:
     return str(content or "")
 
 
+def get_message_id(msg: PlatformMessage) -> str:
+    for attr_name in ("message_id", "id", "platform_message_id"):
+        value = getattr(msg, attr_name, None)
+        if value:
+            return str(value)
+
+    return ""
+
+
 def looks_like_revision_request(msg: PlatformMessage) -> bool:
     text = get_incoming_text(msg).lower()
     return "revision_request" in text or "revise" in text or "revision" in text
+
+
+def looks_like_blind_first_pass(msg: PlatformMessage) -> bool:
+    return "blind_first_pass" in get_incoming_text(msg).lower()
 
 
 def persist_dispatch_step(case_state: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
@@ -183,6 +299,17 @@ class BandAlphaRemoteAdapter(SimpleAdapter[list[dict]]):
         self.done_message = done_message
         self.response_builder = response_builder
 
+    async def send_event_safely(
+        self,
+        tools: AgentToolsProtocol,
+        content: str,
+        message_type: str,
+    ) -> None:
+        try:
+            await tools.send_event(content=content, message_type=message_type)
+        except Exception as exc:
+            print(f"[{self.agent_name}] send_event skipped: {exc}")
+
     async def on_message(
         self,
         msg: PlatformMessage,
@@ -196,30 +323,98 @@ class BandAlphaRemoteAdapter(SimpleAdapter[list[dict]]):
         **kwargs,
     ) -> None:
         print(f"[{self.agent_name}] on_message received room_id={room_id}")
+        primary_reply_sent = False
+        incoming_message_id = get_message_id(msg)
+        if incoming_message_id and incoming_message_id in _PRIMARY_REPLY_SENT_MESSAGE_IDS:
+            print(
+                f"[{self.agent_name}] duplicate delivery skipped "
+                f"message_id={incoming_message_id}"
+            )
+            return
+
         try:
-            await tools.send_event(
-                content=self.start_message,
-                message_type="task",
+            await self.send_event_safely(
+                tools,
+                self.start_message,
+                "task",
             )
 
-            response_text, mentions = resolve_reply(self.response_builder(msg))
-            mentions = sanitize_mentions(mentions)
+            reply = self.response_builder(msg)
+            response_text, mentions = resolve_reply(reply)
+            requested_mentions = sanitize_mentions(mentions)
+            response_text, mentions, missing_target = prepare_outgoing_message(
+                response_text,
+                mentions,
+                participants_msg,
+            )
+            print(
+                f"[{self.agent_name}] sending reply "
+                f"requested_mentions={requested_mentions} "
+                f"final_mentions={mentions}"
+            )
 
             await tools.send_message(
                 content=response_text,
                 mentions=mentions,
             )
-            print(f"[{self.agent_name}] reply sent mentions={len(mentions)}")
+            primary_reply_sent = True
+            if incoming_message_id:
+                _PRIMARY_REPLY_SENT_MESSAGE_IDS.add(incoming_message_id)
+            print(
+                f"[{self.agent_name}] reply sent mentions={len(mentions)} "
+                f"fallback_used={missing_target}"
+            )
 
-            await tools.send_event(
-                content=self.done_message,
-                message_type="task",
+            if incoming_message_id and incoming_message_id in _EXTRA_HANDOFF_SENT_MESSAGE_IDS:
+                print(
+                    f"[{self.agent_name}] dispatch skipped for retried "
+                    f"message_id={incoming_message_id}"
+                )
+            else:
+                for extra_content, extra_mentions in resolve_extra_messages(reply):
+                    requested_extra_mentions = sanitize_mentions(extra_mentions)
+                    extra_content, extra_mentions, extra_missing_target = (
+                        prepare_outgoing_message(
+                            extra_content,
+                            extra_mentions,
+                            participants_msg,
+                        )
+                    )
+                    print(
+                        f"[{self.agent_name}] sending dispatch "
+                        f"requested_mentions={requested_extra_mentions} "
+                        f"final_mentions={extra_mentions}"
+                    )
+                    try:
+                        await tools.send_message(
+                            content=extra_content,
+                            mentions=extra_mentions,
+                        )
+                        print(
+                            f"[{self.agent_name}] dispatch message sent "
+                            f"mentions={len(extra_mentions)} "
+                            f"fallback_used={extra_missing_target}"
+                        )
+                        if incoming_message_id:
+                            _EXTRA_HANDOFF_SENT_MESSAGE_IDS.add(incoming_message_id)
+                    except Exception as exc:
+                        print(f"[{self.agent_name}] dispatch message skipped: {exc}")
+
+            await self.send_event_safely(
+                tools,
+                self.done_message,
+                "task",
             )
 
         except Exception as exc:
-            await tools.send_event(
-                content=f"{self.agent_name} failed: {exc}",
-                message_type="error",
+            if primary_reply_sent:
+                print(f"[{self.agent_name}] post-reply error suppressed: {exc}")
+                return
+
+            await self.send_event_safely(
+                tools,
+                f"{self.agent_name} failed: {exc}",
+                "error",
             )
             raise
 

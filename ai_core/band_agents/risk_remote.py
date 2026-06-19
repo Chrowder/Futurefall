@@ -2,9 +2,9 @@ from ai_core.agents import run_bear_agent, run_bull_agent, run_risk_agent
 from ai_core.band_agents.common import (
     build_reply,
     get_dispatch_evidence_pack,
-    get_env_handle,
     load_dispatch_case_state,
     main_for,
+    optional_env_handle,
     persist_dispatch_step,
 )
 
@@ -53,7 +53,7 @@ Confidence: {risk_output.get("confidence")}
 
 EvaluatorAgent please evaluate the current Bull, Bear, and Risk outputs for citation support.
 """
-    return build_reply(content, [get_env_handle("BAND_EVALUATOR_HANDLE")])
+    return build_reply(content, [optional_env_handle("BAND_EVALUATOR_HANDLE")])
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Optional
 from urllib import error, request
 
@@ -18,6 +19,8 @@ def generate_text(
     if not model:
         raise ValueError("OpenAI-compatible model is missing.")
 
+    timeout = float(os.getenv("LLM_TIMEOUT_SECONDS", "20"))
+
     try:
         from openai import OpenAI
     except ImportError:
@@ -28,9 +31,10 @@ def generate_text(
             base_url=base_url,
             model=model,
             max_tokens=max_tokens,
+            timeout=timeout,
         )
 
-    client = OpenAI(api_key=api_key, base_url=base_url)
+    client = OpenAI(api_key=api_key, base_url=base_url, timeout=timeout)
     response = client.chat.completions.create(
         model=model,
         messages=[
@@ -53,6 +57,7 @@ def generate_text_with_urllib(
     base_url: str,
     model: str,
     max_tokens: int,
+    timeout: float,
 ) -> str:
     url = f"{base_url.rstrip('/')}/chat/completions"
     payload = {
@@ -75,7 +80,7 @@ def generate_text_with_urllib(
     )
 
     try:
-        with request.urlopen(http_request, timeout=60) as response:
+        with request.urlopen(http_request, timeout=timeout) as response:
             raw_response = response.read().decode("utf-8")
     except error.HTTPError as exc:
         raise RuntimeError(
