@@ -1,6 +1,7 @@
 import asyncio
 import contextlib
 import os
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -16,13 +17,49 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from ai_core.case_state_store import append_audit_event, load_case_state, save_case_state
+from ai_core.case_state_store import append_audit_event, create_or_reset_case, get_case_path, load_case_state, save_case_state
 from ai_core.env_config import load_local_env
 from ai_core.data_providers.evidence_builder import build_evidence_pack
 
 DEFAULT_CASE_ID = "AAPL-001"
 DEFAULT_TICKER = "AAPL"
 MAX_BAND_MESSAGE_CHARS = 2400
+COMPANY_TICKERS = {
+    "microsoft": "MSFT",
+    "微软": "MSFT",
+    "apple": "AAPL",
+    "苹果": "AAPL",
+    "nvidia": "NVDA",
+    "英伟达": "NVDA",
+    "tesla": "TSLA",
+    "特斯拉": "TSLA",
+    "amazon": "AMZN",
+    "亚马逊": "AMZN",
+    "google": "GOOGL",
+    "alphabet": "GOOGL",
+    "谷歌": "GOOGL",
+    "meta": "META",
+    "facebook": "META",
+}
+IGNORED_TICKER_TOKENS = {
+    "AI",
+    "ALL",
+    "API",
+    "BAND",
+    "BANDALPHA",
+    "BEAR",
+    "BULL",
+    "CASE",
+    "CHAIR",
+    "DATA",
+    "ID",
+    "LLM",
+    "MEMO",
+    "MODE",
+    "PM",
+    "RISK",
+    "SEC",
+}
 
 BandReply = str | dict[str, Any]
 ResponseBuilder = Callable[[PlatformMessage], BandReply]
@@ -194,6 +231,39 @@ def get_incoming_text(msg: PlatformMessage) -> str:
     return str(content or "")
 
 
+def case_id_for_ticker(ticker: str) -> str:
+    return f"{ticker.upper()}-001"
+
+
+def extract_case_id(text: str) -> str | None:
+    match = re.search(r"\bcase[_ -]?id\s*[:=]\s*([A-Z0-9._-]+)", text, re.IGNORECASE)
+    if match:
+        return match.group(1).upper()
+
+    match = re.search(r"\b([A-Z]{1,5})-001\b", text)
+    if match:
+        return f"{match.group(1).upper()}-001"
+
+    return None
+
+
+def extract_ticker(text: str, default: str = DEFAULT_TICKER) -> str:
+    lowered = text.lower()
+    for company_name, ticker in COMPANY_TICKERS.items():
+        if company_name in lowered:
+            return ticker
+
+    ticker_label = re.search(r"\bticker\s*[:=]\s*([A-Z]{1,5})\b", text, re.IGNORECASE)
+    if ticker_label:
+        return ticker_label.group(1).upper()
+
+    for token in reversed(re.findall(r"\b[A-Z]{1,5}\b", text)):
+        if token.upper() not in IGNORED_TICKER_TOKENS:
+            return token.upper()
+
+    return default
+
+
 def get_message_id(msg: PlatformMessage) -> str:
     for attr_name in ("message_id", "id", "platform_message_id"):
         value = getattr(msg, attr_name, None)
@@ -218,8 +288,16 @@ def persist_dispatch_step(case_state: dict[str, Any], event: dict[str, Any]) -> 
     return append_audit_event(case_id, event)
 
 
-def load_dispatch_case_state() -> dict[str, Any]:
-    case_state = load_case_state(DEFAULT_CASE_ID)
+def load_dispatch_case_state(msg: PlatformMessage | None = None) -> dict[str, Any]:
+    incoming_text = get_incoming_text(msg) if msg is not None else ""
+    ticker = extract_ticker(incoming_text)
+    case_id = extract_case_id(incoming_text) or case_id_for_ticker(ticker)
+
+    if case_id != DEFAULT_CASE_ID and not get_case_path(case_id).exists():
+        case_state = create_or_reset_case(case_id, ticker)
+    else:
+        case_state = load_case_state(case_id)
+
     save_case_state(case_state["case_id"], case_state)
     return case_state
 
@@ -229,7 +307,7 @@ def get_dispatch_evidence_pack(case_state: dict[str, Any]) -> dict[str, Any]:
     if evidence_pack:
         return evidence_pack
 
-    return build_evidence_pack(DEFAULT_TICKER, provider="stub")
+    return build_evidence_pack(case_state.get("ticker", DEFAULT_TICKER), provider="env")
 
 
 def bullet_lines(items: list[dict[str, Any]], key: str) -> str:

@@ -10,7 +10,7 @@ from ai_core.band_agents.common import (
 
 
 def build_response(msg):
-    case_state = load_dispatch_case_state()
+    case_state = load_dispatch_case_state(msg)
     evidence_pack = get_dispatch_evidence_pack(case_state)
     case_state["evidence_pack"] = evidence_pack
     bull_output = case_state.get("bull_output") or run_bull_agent(evidence_pack)
@@ -42,6 +42,9 @@ def build_response(msg):
     )
 
     content = f"""RiskAgent generated risk flags.
+
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
 
 Risk Summary:
 {risk_output["risk_summary"]}

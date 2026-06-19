@@ -1,5 +1,7 @@
 import os
+from typing import Any, List
 
+from ai_core.agents import valid_citations
 from ai_core.env_config import env_presence, load_local_env
 from ai_core.runner import run_full_research_case
 
@@ -58,6 +60,23 @@ def missing_llm_settings():
     return sorted(set(missing))
 
 
+def collect_citation_ids(obj: Any) -> List[str]:
+    citation_ids = []
+
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            if key == "citation_id" and isinstance(value, str):
+                citation_ids.append(value)
+            else:
+                citation_ids.extend(collect_citation_ids(value))
+
+    elif isinstance(obj, list):
+        for item in obj:
+            citation_ids.extend(collect_citation_ids(item))
+
+    return citation_ids
+
+
 def main():
     print_env_presence()
 
@@ -83,8 +102,16 @@ def main():
             os.environ["LLM_STRICT_ERRORS"] = original_strict
 
     assert case_state["final_memo"]
-    assert case_state["evaluation_output"]["revision_required"] is True
-    assert case_state["final_evaluation_output"]["revision_required"] is False
+    assert case_state["evaluation_output"]
+    assert case_state["final_evaluation_output"]
+    assert case_state["final_memo"]["summary"]
+    assert case_state["final_memo"]["disclaimer"] == "This is a research support memo, not investment advice."
+    assert case_state["final_evaluation_output"]["hallucination_risk"] in {"low", "medium"}
+
+    valid_ids = valid_citations(case_state["evidence_pack"])
+    used_citation_ids = collect_citation_ids(case_state)
+    invalid_citation_ids = sorted({cid for cid in used_citation_ids if cid and cid not in valid_ids})
+    assert invalid_citation_ids == []
 
     print("\n=== LLM ENABLED SMOKE CHECK PASSED ===")
     print("LLM agents enabled: True")
@@ -93,8 +120,10 @@ def main():
     print(f"Risk provider: {os.getenv('RISK_PROVIDER', 'featherless')}")
     print(f"Memo provider: {os.getenv('MEMO_PROVIDER', 'aimlapi')}")
     print("Final memo generated: True")
-    print("Initial revision required: True")
-    print("Final revision required: False")
+    print(f"Initial revision required: {case_state['evaluation_output']['revision_required']}")
+    print(f"Final revision required: {case_state['final_evaluation_output']['revision_required']}")
+    print(f"Final hallucination risk: {case_state['final_evaluation_output']['hallucination_risk']}")
+    print("All citation IDs are valid: True")
 
 
 if __name__ == "__main__":

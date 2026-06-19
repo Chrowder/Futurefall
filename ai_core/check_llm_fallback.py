@@ -9,6 +9,7 @@ from ai_core.runner import run_full_research_case
 
 def main():
     original_use_llm = os.environ.get("USE_LLM_AGENTS")
+    original_provider = os.environ.get("EVIDENCE_PROVIDER")
     key_names = (
         "AIMLAPI_API_KEY",
         "AIMLAPI_BASE_URL",
@@ -23,6 +24,7 @@ def main():
 
     try:
         os.environ["USE_LLM_AGENTS"] = "false"
+        os.environ["EVIDENCE_PROVIDER"] = "stub"
         for key in key_names:
             os.environ.pop(key, None)
 
@@ -45,6 +47,11 @@ def main():
             os.environ.pop("USE_LLM_AGENTS", None)
         else:
             os.environ["USE_LLM_AGENTS"] = original_use_llm
+
+        if original_provider is None:
+            os.environ.pop("EVIDENCE_PROVIDER", None)
+        else:
+            os.environ["EVIDENCE_PROVIDER"] = original_provider
 
         for key, value in original_keys.items():
             if value is None:

@@ -13,7 +13,7 @@ from ai_core.band_agents.common import (
 
 
 def build_response(msg):
-    case_state = load_dispatch_case_state()
+    case_state = load_dispatch_case_state(msg)
     evidence_pack = get_dispatch_evidence_pack(case_state)
     case_state["evidence_pack"] = evidence_pack
 
@@ -76,6 +76,9 @@ Confidence: {bear_output.get("confidence")}
     )
 
     content = f"""BearAgent generated an adversarial critique.
+
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
 
 Thesis:
 {bear_output["bear_thesis"]}

@@ -14,7 +14,7 @@ def get_case_path(case_id: str) -> Path:
 
 
 def _new_case_state(case_id: str, ticker: str = "AAPL") -> Dict[str, Any]:
-    evidence_pack = build_evidence_pack(ticker=ticker, provider="stub")
+    evidence_pack = build_evidence_pack(ticker=ticker, provider="env")
     evidence_pack["case_id"] = case_id
 
     return {

@@ -22,59 +22,175 @@
         "evidence_items": [
           {
             "citation_id": "E1",
-            "claim": "FY26Q2 revenue was $96.4B, YoY +4.2%; services revenue was $26.8B, YoY +11.5%.",
-            "source": "STUB-10Q",
-            "date": "2026-05-02",
-            "provider": "stub",
-            "source_url": null,
-            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
+            "claim": "Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
+            "source": "SEC submissions",
+            "date": "2026-06-19",
+            "provider": "sec",
+            "source_url": "https://data.sec.gov/submissions/CIK0000320193.json",
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
           },
           {
             "citation_id": "E2",
-            "claim": "Gross margin was 46.9%; services gross margin was 74.1%.",
-            "source": "STUB-10Q",
-            "date": "2026-05-02",
-            "provider": "stub",
-            "source_url": null,
-            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
+            "claim": "Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
+            "source": "SEC submissions",
+            "date": "2026-06-19",
+            "provider": "sec",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm",
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
           },
           {
             "citation_id": "E3",
-            "claim": "Greater China revenue was $15.1B, YoY -8.3%.",
-            "source": "STUB-10Q",
-            "date": "2026-05-02",
-            "provider": "stub",
-            "source_url": null,
-            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
+            "claim": "Latest reported revenue value was $219.7B based on SEC concept RevenueFromContractWithCustomerExcludingAssessedTax (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+            "source": "SEC companyfacts",
+            "date": "2026-06-19",
+            "provider": "sec",
+            "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
           },
           {
             "citation_id": "E4",
-            "claim": "The company announced a new $110B buyback authorization.",
-            "source": "STUB-Company Announcement",
-            "date": "2026-05-02",
-            "provider": "stub",
-            "source_url": null,
-            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
+            "claim": "Latest reported net income value was $61.1B based on SEC concept NetIncomeLoss (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+            "source": "SEC companyfacts",
+            "date": "2026-06-19",
+            "provider": "sec",
+            "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
           },
           {
             "citation_id": "E5",
-            "claim": "Apple Intelligence 2 adoption reached 61% on eligible devices after iOS 20 release.",
-            "source": "STUB-News",
-            "date": "2026-04-18",
-            "provider": "stub",
-            "source_url": null,
-            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
+            "claim": "Latest reported assets value was $359.2B based on SEC concept Assets (SEC FY/FP 2026/Q2, period end 2025-09-27, filed 2026-05-01). Latest reported cash value was $35.9B based on SEC concept CashAndCashEquivalentsAtCarryingValue (SEC FY/FP 2026/Q2, period end 2025-09-27, filed 2026-05-01).",
+            "source": "SEC companyfacts",
+            "date": "2026-06-19",
+            "provider": "sec",
+            "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json",
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
           },
           {
             "citation_id": "E6",
-            "claim": "Supply chain data shows FY26H2 iPhone shipment estimate down 5%.",
-            "source": "STUB-Supply Chain Research",
-            "date": "2026-05-20",
-            "provider": "stub",
+            "claim": "Market snapshot unavailable for AAPL: yfinance is not installed. Install it to enable this optional provider.",
+            "source": "Yahoo Finance via yfinance",
+            "date": "2026-06-19",
+            "provider": "yfinance",
             "source_url": null,
-            "fetched_at": "2026-06-19T03:04:12.331608+00:00"
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
+          },
+          {
+            "citation_id": "E7",
+            "claim": "Latest SEC 8-K was filed on 2026-04-30 with accession 0000320193-26-000011.",
+            "source": "SEC submissions",
+            "date": "2026-06-19",
+            "provider": "sec",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000011/aapl-20260430.htm",
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
+          },
+          {
+            "citation_id": "E8",
+            "claim": "Data freshness note: fetched_at=2026-06-19T05:25:35.748808+00:00. yfinance market snapshot unavailable",
+            "source": "Provider status",
+            "date": "2026-06-19",
+            "provider": "hybrid",
+            "source_url": null,
+            "fetched_at": "2026-06-19T05:25:35.748808+00:00"
           }
-        ]
+        ],
+        "provider_payloads": {
+          "sec_company_profile": {
+            "provider": "sec",
+            "ticker": "AAPL",
+            "cik": 320193,
+            "cik_padded": "0000320193",
+            "company": "Apple Inc.",
+            "sic": "3571",
+            "sic_description": "Electronic Computers",
+            "exchanges": [
+              "Nasdaq"
+            ],
+            "tickers": [
+              "AAPL"
+            ],
+            "source_url": "https://data.sec.gov/submissions/CIK0000320193.json"
+          },
+          "sec_financial_snapshot": {
+            "provider": "sec",
+            "ticker": "AAPL",
+            "cik": 320193,
+            "cik_padded": "0000320193",
+            "company": "Apple Inc.",
+            "revenue": {
+              "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+              "label": "Revenue from Contract with Customer, Excluding Assessed Tax",
+              "value": 219659000000,
+              "form": "10-Q",
+              "filed": "2026-05-01",
+              "fy": 2026,
+              "fp": "Q2",
+              "end": "2025-03-29",
+              "accession_number": "0000320193-26-000013"
+            },
+            "net_income": {
+              "concept": "NetIncomeLoss",
+              "label": "Net Income (Loss) Attributable to Parent",
+              "value": 61110000000,
+              "form": "10-Q",
+              "filed": "2026-05-01",
+              "fy": 2026,
+              "fp": "Q2",
+              "end": "2025-03-29",
+              "accession_number": "0000320193-26-000013"
+            },
+            "assets": {
+              "concept": "Assets",
+              "label": "Assets",
+              "value": 359241000000,
+              "form": "10-Q",
+              "filed": "2026-05-01",
+              "fy": 2026,
+              "fp": "Q2",
+              "end": "2025-09-27",
+              "accession_number": "0000320193-26-000013"
+            },
+            "cash": {
+              "concept": "CashAndCashEquivalentsAtCarryingValue",
+              "label": "Cash and Cash Equivalents, at Carrying Value",
+              "value": 35934000000,
+              "form": "10-Q",
+              "filed": "2026-05-01",
+              "fy": 2026,
+              "fp": "Q2",
+              "end": "2025-09-27",
+              "accession_number": "0000320193-26-000013"
+            },
+            "source_url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json"
+          },
+          "sec_recent_filings": {
+            "provider": "sec",
+            "ticker": "AAPL",
+            "cik": 320193,
+            "company": "Apple Inc.",
+            "latest_periodic": {
+              "form": "10-Q",
+              "accession_number": "0000320193-26-000013",
+              "filing_date": "2026-05-01",
+              "report_date": "2026-03-28",
+              "primary_document": "aapl-20260328.htm",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm"
+            },
+            "latest_current": {
+              "form": "8-K",
+              "accession_number": "0000320193-26-000011",
+              "filing_date": "2026-04-30",
+              "report_date": "2026-04-30",
+              "primary_document": "aapl-20260430.htm",
+              "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000011/aapl-20260430.htm"
+            },
+            "source_url": "https://data.sec.gov/submissions/CIK0000320193.json"
+          },
+          "market_snapshot": {
+            "provider": "yfinance",
+            "ticker": "AAPL",
+            "error": "yfinance is not installed. Install it to enable this optional provider."
+          }
+        }
       },
       "revision_required": false,
       "target_agent": null
@@ -86,30 +202,30 @@
       "message_type": "agent_result",
       "status": "completed",
       "payload": {
-        "bull_thesis": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+        "bull_thesis": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
         "supporting_points": [
           {
-            "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
+            "claim": "Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
             "citation_id": "E1"
           },
           {
-            "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+            "claim": "Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
             "citation_id": "E2"
           },
           {
-            "claim": "The $110B buyback authorization supports shareholder return.",
-            "citation_id": "E4"
+            "claim": "Latest reported revenue value was $219.7B based on SEC concept RevenueFromContractWithCustomerExcludingAssessedTax (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+            "citation_id": "E3"
           },
           {
-            "claim": "Apple Intelligence adoption will significantly boost iPhone demand.",
-            "citation_id": "E5"
+            "claim": "Latest reported net income value was $61.1B based on SEC concept NetIncomeLoss (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+            "citation_id": "E4"
           }
         ],
         "key_assumptions": [
-          "Services growth remains stable.",
-          "Apple Intelligence adoption can support future device engagement."
+          "Recent SEC filings and financial facts are relevant to the research case.",
+          "Market context should be interpreted alongside filing-grounded fundamentals."
         ],
-        "confidence": 0.78
+        "confidence": 0.7
       },
       "revision_required": false,
       "target_agent": null
@@ -121,26 +237,26 @@
       "message_type": "agent_result",
       "status": "completed",
       "payload": {
-        "bear_thesis": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+        "bear_thesis": "The constructive case should be treated cautiously because the Evidence Pack is limited to fetched company, filing, financial, and market context.",
         "attack_points": [
           {
-            "target_claim": "AAPL has a constructive medium-term setup.",
-            "critique": "Greater China revenue declined 8.3% YoY, which weakens the growth narrative.",
-            "citation_id": "E3"
+            "target_claim": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
+            "critique": "This support depends on the scope and freshness of cited evidence: Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
+            "citation_id": "E1"
           },
           {
-            "target_claim": "Apple Intelligence adoption can support future device engagement.",
-            "critique": "Supply chain data still indicates FY26H2 iPhone shipment estimate down 5%, so adoption does not yet prove demand recovery.",
-            "citation_id": "E6"
+            "target_claim": "Recent data is sufficient for a complete view.",
+            "critique": "Additional business, segment, and forward-looking context may be needed beyond: Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
+            "citation_id": "E2"
           }
         ],
         "missed_risks": [
           {
-            "risk": "AI feature adoption may not translate into near-term iPhone upgrades.",
-            "citation_id": "E6"
+            "risk": "Provider gaps, stale filings, or missing market data can limit confidence.",
+            "citation_id": "E8"
           }
         ],
-        "confidence": 0.78
+        "confidence": 0.72
       },
       "revision_required": false,
       "target_agent": null
@@ -152,98 +268,30 @@
       "message_type": "agent_result",
       "status": "completed",
       "payload": {
-        "risk_summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
+        "risk_summary": "Key risks are evidence freshness, provider coverage gaps, and the need to interpret filing-grounded facts alongside broader business context.",
         "risk_flags": [
           {
-            "risk": "Greater China revenue declined 8.3% YoY, creating regional growth pressure.",
-            "severity": "high",
-            "citation_id": "E3"
-          },
-          {
-            "risk": "FY26H2 iPhone shipment estimate is down 5%, suggesting device demand uncertainty.",
-            "severity": "high",
-            "citation_id": "E6"
-          },
-          {
-            "risk": "Apple Intelligence adoption may improve engagement, but current evidence does not prove near-term iPhone upgrade demand.",
+            "risk": "Research interpretation depends on this evidence item: Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
             "severity": "medium",
-            "citation_id": "E5"
-          }
-        ],
-        "confidence": 0.82
-      },
-      "revision_required": false,
-      "target_agent": null
-    },
-    {
-      "case_id": "AAPL-001",
-      "from_agent": "EvaluatorAgent",
-      "to_agent": "BullAgent",
-      "message_type": "revision_request",
-      "status": "completed",
-      "payload": {
-        "faithfulness_score": 0.82,
-        "citation_coverage": 1.0,
-        "unsupported_claims": [
-          {
-            "source_agent": "BullAgent",
-            "claim": "Apple Intelligence adoption will significantly boost iPhone demand.",
-            "reason": "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
-            "required_action": "Lower confidence or rewrite with more cautious wording."
-          }
-        ],
-        "hallucination_risk": "medium",
-        "revision_required": true,
-        "target_agent": "BullAgent",
-        "risk_coverage_score": 1.0,
-        "confidence_calibration": "overconfident",
-        "evaluation_notes": [
-          "BearAgent addressed at least one Evidence Pack risk.",
-          "RiskAgent covered Greater China weakness.",
-          "RiskAgent covered iPhone shipment uncertainty.",
-          "RiskAgent covered AI adoption demand uncertainty.",
-          "All evaluated claims include citation IDs."
-        ],
-        "revision_reasons": [
-          "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
-          "BullAgent confidence is too high for an unsupported causal claim."
-        ]
-      },
-      "revision_required": true,
-      "target_agent": "BullAgent"
-    },
-    {
-      "case_id": "AAPL-001",
-      "from_agent": "BullAgent",
-      "to_agent": null,
-      "message_type": "agent_result",
-      "status": "completed",
-      "payload": {
-        "bull_thesis": "AAPL has a constructive but balanced medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns, while device demand recovery remains uncertain.",
-        "supporting_points": [
-          {
-            "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
             "citation_id": "E1"
           },
           {
-            "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+            "risk": "Research interpretation depends on this evidence item: Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
+            "severity": "medium",
             "citation_id": "E2"
           },
           {
-            "claim": "The $110B buyback authorization supports shareholder return.",
-            "citation_id": "E4"
+            "risk": "Research interpretation depends on this evidence item: Latest reported revenue value was $219.7B based on SEC concept RevenueFromContractWithCustomerExcludingAssessedTax (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+            "severity": "medium",
+            "citation_id": "E3"
           },
           {
-            "claim": "Apple Intelligence adoption may support future device engagement, but current evidence does not yet prove a significant iPhone demand boost.",
-            "citation_id": "E5"
+            "risk": "Research interpretation depends on this evidence item: Latest reported net income value was $61.1B based on SEC concept NetIncomeLoss (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+            "severity": "medium",
+            "citation_id": "E4"
           }
         ],
-        "key_assumptions": [
-          "Services growth remains stable.",
-          "Apple Intelligence adoption may support engagement, but demand impact requires further evidence."
-        ],
-        "confidence": 0.68,
-        "revision_note": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim."
+        "confidence": 0.74
       },
       "revision_required": false,
       "target_agent": null
@@ -264,10 +312,8 @@
         "risk_coverage_score": 1.0,
         "confidence_calibration": "well_calibrated",
         "evaluation_notes": [
-          "BearAgent addressed at least one Evidence Pack risk.",
-          "RiskAgent covered Greater China weakness.",
-          "RiskAgent covered iPhone shipment uncertainty.",
-          "RiskAgent covered AI adoption demand uncertainty.",
+          "BearAgent addressed cited Evidence Pack items.",
+          "RiskAgent covered 3 of 3 required evidence references.",
           "All evaluated claims include citation IDs."
         ],
         "revision_reasons": []
@@ -284,71 +330,75 @@
       "payload": {
         "company": "Apple Inc.",
         "ticker": "AAPL",
-        "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
+        "summary": "Apple Inc. (AAPL) has been reviewed using fetched company, filing, financial, and market evidence. The memo should be treated as research support because provider coverage, filing freshness, and missing auxiliary market data can affect confidence.",
         "bull_case": {
-          "bull_thesis": "AAPL has a constructive but balanced medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns, while device demand recovery remains uncertain.",
+          "bull_thesis": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
           "supporting_points": [
             {
-              "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
+              "claim": "Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
               "citation_id": "E1"
             },
             {
-              "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+              "claim": "Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
               "citation_id": "E2"
             },
             {
-              "claim": "The $110B buyback authorization supports shareholder return.",
-              "citation_id": "E4"
-            },
-            {
-              "claim": "Apple Intelligence adoption may support future device engagement, but current evidence does not yet prove a significant iPhone demand boost.",
-              "citation_id": "E5"
-            }
-          ],
-          "key_assumptions": [
-            "Services growth remains stable.",
-            "Apple Intelligence adoption may support engagement, but demand impact requires further evidence."
-          ],
-          "confidence": 0.68,
-          "revision_note": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim."
-        },
-        "bear_case": {
-          "bear_thesis": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
-          "attack_points": [
-            {
-              "target_claim": "AAPL has a constructive medium-term setup.",
-              "critique": "Greater China revenue declined 8.3% YoY, which weakens the growth narrative.",
+              "claim": "Latest reported revenue value was $219.7B based on SEC concept RevenueFromContractWithCustomerExcludingAssessedTax (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
               "citation_id": "E3"
             },
             {
-              "target_claim": "Apple Intelligence adoption can support future device engagement.",
-              "critique": "Supply chain data still indicates FY26H2 iPhone shipment estimate down 5%, so adoption does not yet prove demand recovery.",
-              "citation_id": "E6"
+              "claim": "Latest reported net income value was $61.1B based on SEC concept NetIncomeLoss (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+              "citation_id": "E4"
+            }
+          ],
+          "key_assumptions": [
+            "Recent SEC filings and financial facts are relevant to the research case.",
+            "Market context should be interpreted alongside filing-grounded fundamentals."
+          ],
+          "confidence": 0.7
+        },
+        "bear_case": {
+          "bear_thesis": "The constructive case should be treated cautiously because the Evidence Pack is limited to fetched company, filing, financial, and market context.",
+          "attack_points": [
+            {
+              "target_claim": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
+              "critique": "This support depends on the scope and freshness of cited evidence: Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
+              "citation_id": "E1"
+            },
+            {
+              "target_claim": "Recent data is sufficient for a complete view.",
+              "critique": "Additional business, segment, and forward-looking context may be needed beyond: Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
+              "citation_id": "E2"
             }
           ],
           "missed_risks": [
             {
-              "risk": "AI feature adoption may not translate into near-term iPhone upgrades.",
-              "citation_id": "E6"
+              "risk": "Provider gaps, stale filings, or missing market data can limit confidence.",
+              "citation_id": "E8"
             }
           ],
-          "confidence": 0.78
+          "confidence": 0.72
         },
         "risk_flags": [
           {
-            "risk": "Greater China revenue declined 8.3% YoY, creating regional growth pressure.",
-            "severity": "high",
+            "risk": "Research interpretation depends on this evidence item: Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
+            "severity": "medium",
+            "citation_id": "E1"
+          },
+          {
+            "risk": "Research interpretation depends on this evidence item: Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
+            "severity": "medium",
+            "citation_id": "E2"
+          },
+          {
+            "risk": "Research interpretation depends on this evidence item: Latest reported revenue value was $219.7B based on SEC concept RevenueFromContractWithCustomerExcludingAssessedTax (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+            "severity": "medium",
             "citation_id": "E3"
           },
           {
-            "risk": "FY26H2 iPhone shipment estimate is down 5%, suggesting device demand uncertainty.",
-            "severity": "high",
-            "citation_id": "E6"
-          },
-          {
-            "risk": "Apple Intelligence adoption may improve engagement, but current evidence does not prove near-term iPhone upgrade demand.",
+            "risk": "Research interpretation depends on this evidence item: Latest reported net income value was $61.1B based on SEC concept NetIncomeLoss (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
             "severity": "medium",
-            "citation_id": "E5"
+            "citation_id": "E4"
           }
         ],
         "evaluation_summary": {
@@ -360,10 +410,8 @@
           "confidence_calibration": "well_calibrated",
           "revision_reasons": [],
           "evaluation_notes": [
-            "BearAgent addressed at least one Evidence Pack risk.",
-            "RiskAgent covered Greater China weakness.",
-            "RiskAgent covered iPhone shipment uncertainty.",
-            "RiskAgent covered AI adoption demand uncertainty.",
+            "BearAgent addressed cited Evidence Pack items.",
+            "RiskAgent covered 3 of 3 required evidence references.",
             "All evaluated claims include citation IDs."
           ]
         },
@@ -381,7 +429,7 @@
       "target": "ALL",
       "message_type": "agent_result",
       "title": "Evidence Pack Ready",
-      "summary": "Mock evidence pack for AAPL with 6 evidence items.",
+      "summary": "Mock evidence pack for AAPL with 8 evidence items.",
       "status": "completed",
       "revision_required": false
     },
@@ -391,7 +439,7 @@
       "target": "ALL",
       "message_type": "agent_result",
       "title": "Bull Thesis Generated",
-      "summary": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+      "summary": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
       "status": "completed",
       "revision_required": false
     },
@@ -401,7 +449,7 @@
       "target": "ALL",
       "message_type": "agent_result",
       "title": "Bear Critique Generated",
-      "summary": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+      "summary": "The constructive case should be treated cautiously because the Evidence Pack is limited to fetched company, filing, financial, and market context.",
       "status": "completed",
       "revision_required": false
     },
@@ -411,32 +459,12 @@
       "target": "ALL",
       "message_type": "agent_result",
       "title": "Risk Flags Generated",
-      "summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
+      "summary": "Key risks are evidence freshness, provider coverage gaps, and the need to interpret filing-grounded facts alongside broader business context.",
       "status": "completed",
       "revision_required": false
     },
     {
       "step": 5,
-      "agent": "EvaluatorAgent",
-      "target": "BullAgent",
-      "message_type": "revision_request",
-      "title": "Revision Requested",
-      "summary": "EvaluatorAgent found 1 unsupported claim(s) and requested revision.",
-      "status": "completed",
-      "revision_required": true
-    },
-    {
-      "step": 6,
-      "agent": "BullAgent",
-      "target": "ALL",
-      "message_type": "agent_result",
-      "title": "Bull Thesis Revised",
-      "summary": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim.",
-      "status": "completed",
-      "revision_required": false
-    },
-    {
-      "step": 7,
       "agent": "EvaluatorAgent",
       "target": "ALL",
       "message_type": "agent_result",
@@ -446,7 +474,7 @@
       "revision_required": false
     },
     {
-      "step": 8,
+      "step": 6,
       "agent": "MemoAgent",
       "target": "ALL",
       "message_type": "final_memo",
@@ -458,7 +486,7 @@
   ],
   "audit_log": [
     {
-      "timestamp": "2026-06-19T03:04:12.364096+00:00",
+      "timestamp": "2026-06-19T05:25:35.868998+00:00",
       "agent": "ChairAgent",
       "action": "case_created",
       "target_agent": "DataStewardAgent",
@@ -466,89 +494,69 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-19T03:04:12.364696+00:00",
+      "timestamp": "2026-06-19T05:25:35.869774+00:00",
       "agent": "DataStewardAgent",
       "action": "evidence_pack_ready",
       "target_agent": "BullAgent",
-      "summary": "Prepared mock Evidence Pack with 6 items.",
+      "summary": "Prepared Evidence Pack with 8 items.",
       "evidence_refs": [
         "E1",
         "E2",
         "E3",
         "E4",
         "E5",
-        "E6"
+        "E6",
+        "E7",
+        "E8"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:12.369109+00:00",
+      "timestamp": "2026-06-19T05:25:35.873238+00:00",
       "agent": "BullAgent",
       "action": "bull_generated",
       "target_agent": "BearAgent",
-      "summary": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+      "summary": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
       "evidence_refs": [
         "E1",
         "E2",
-        "E4",
-        "E5"
+        "E3",
+        "E4"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:12.376253+00:00",
+      "timestamp": "2026-06-19T05:25:35.876685+00:00",
       "agent": "BearAgent",
       "action": "bear_generated",
       "target_agent": "RiskAgent",
-      "summary": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+      "summary": "The constructive case should be treated cautiously because the Evidence Pack is limited to fetched company, filing, financial, and market context.",
       "evidence_refs": [
-        "E3",
-        "E6"
+        "E1",
+        "E2"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:12.382198+00:00",
+      "timestamp": "2026-06-19T05:25:35.879939+00:00",
       "agent": "RiskAgent",
       "action": "risk_generated",
       "target_agent": "EvaluatorAgent",
-      "summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
-      "evidence_refs": [
-        "E3",
-        "E6",
-        "E5"
-      ]
-    },
-    {
-      "timestamp": "2026-06-19T03:04:12.384411+00:00",
-      "agent": "EvaluatorAgent",
-      "action": "evaluation_completed",
-      "target_agent": "BullAgent",
-      "summary": "Initial evaluation completed. Revision required: True.",
-      "evidence_refs": []
-    },
-    {
-      "timestamp": "2026-06-19T03:04:12.385166+00:00",
-      "agent": "EvaluatorAgent",
-      "action": "revision_requested",
-      "target_agent": "BullAgent",
-      "summary": "Evaluator requested a BullAgent revision for an unsupported demand claim.",
-      "evidence_refs": [
-        "E5"
-      ]
-    },
-    {
-      "timestamp": "2026-06-19T03:04:12.386544+00:00",
-      "agent": "BullAgent",
-      "action": "bull_revised",
-      "target_agent": "EvaluatorAgent",
-      "summary": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim.",
+      "summary": "Key risks are evidence freshness, provider coverage gaps, and the need to interpret filing-grounded facts alongside broader business context.",
       "evidence_refs": [
         "E1",
         "E2",
-        "E4",
-        "E5"
+        "E3",
+        "E4"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:12.387873+00:00",
+      "timestamp": "2026-06-19T05:25:35.880921+00:00",
+      "agent": "EvaluatorAgent",
+      "action": "evaluation_completed",
+      "target_agent": null,
+      "summary": "Initial evaluation completed. Revision required: False.",
+      "evidence_refs": []
+    },
+    {
+      "timestamp": "2026-06-19T05:25:35.881857+00:00",
       "agent": "EvaluatorAgent",
       "action": "final_evaluation_completed",
       "target_agent": "MemoAgent",
@@ -556,22 +564,24 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-19T03:04:12.398057+00:00",
+      "timestamp": "2026-06-19T05:25:35.885557+00:00",
       "agent": "MemoAgent",
       "action": "memo_generated",
       "target_agent": "HumanReviewer",
-      "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
+      "summary": "Apple Inc. (AAPL) has been reviewed using fetched company, filing, financial, and market evidence. The memo should be treated as research support because provider coverage, filing freshness, and missing auxiliary market data can affect confidence.",
       "evidence_refs": [
         "E1",
         "E2",
         "E3",
         "E4",
         "E5",
-        "E6"
+        "E6",
+        "E7",
+        "E8"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:12.399993+00:00",
+      "timestamp": "2026-06-19T05:25:35.886543+00:00",
       "agent": "ChairAgent",
       "action": "human_review_pending",
       "target_agent": "HumanReviewer",
@@ -582,37 +592,27 @@
         "E3",
         "E4",
         "E5",
-        "E6"
+        "E6",
+        "E7",
+        "E8"
       ]
     }
   ],
   "initial_evaluation": {
-    "faithfulness_score": 0.82,
+    "faithfulness_score": 0.92,
     "citation_coverage": 1.0,
-    "unsupported_claims": [
-      {
-        "source_agent": "BullAgent",
-        "claim": "Apple Intelligence adoption will significantly boost iPhone demand.",
-        "reason": "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
-        "required_action": "Lower confidence or rewrite with more cautious wording."
-      }
-    ],
-    "hallucination_risk": "medium",
-    "revision_required": true,
-    "target_agent": "BullAgent",
+    "unsupported_claims": [],
+    "hallucination_risk": "low",
+    "revision_required": false,
+    "target_agent": null,
     "risk_coverage_score": 1.0,
-    "confidence_calibration": "overconfident",
+    "confidence_calibration": "well_calibrated",
     "evaluation_notes": [
-      "BearAgent addressed at least one Evidence Pack risk.",
-      "RiskAgent covered Greater China weakness.",
-      "RiskAgent covered iPhone shipment uncertainty.",
-      "RiskAgent covered AI adoption demand uncertainty.",
+      "BearAgent addressed cited Evidence Pack items.",
+      "RiskAgent covered 3 of 3 required evidence references.",
       "All evaluated claims include citation IDs."
     ],
-    "revision_reasons": [
-      "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
-      "BullAgent confidence is too high for an unsupported causal claim."
-    ]
+    "revision_reasons": []
   },
   "final_evaluation": {
     "faithfulness_score": 0.92,
@@ -624,10 +624,8 @@
     "risk_coverage_score": 1.0,
     "confidence_calibration": "well_calibrated",
     "evaluation_notes": [
-      "BearAgent addressed at least one Evidence Pack risk.",
-      "RiskAgent covered Greater China weakness.",
-      "RiskAgent covered iPhone shipment uncertainty.",
-      "RiskAgent covered AI adoption demand uncertainty.",
+      "BearAgent addressed cited Evidence Pack items.",
+      "RiskAgent covered 3 of 3 required evidence references.",
       "All evaluated claims include citation IDs."
     ],
     "revision_reasons": []
@@ -635,71 +633,75 @@
   "final_memo": {
     "company": "Apple Inc.",
     "ticker": "AAPL",
-    "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
+    "summary": "Apple Inc. (AAPL) has been reviewed using fetched company, filing, financial, and market evidence. The memo should be treated as research support because provider coverage, filing freshness, and missing auxiliary market data can affect confidence.",
     "bull_case": {
-      "bull_thesis": "AAPL has a constructive but balanced medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns, while device demand recovery remains uncertain.",
+      "bull_thesis": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
       "supporting_points": [
         {
-          "claim": "Services revenue grew 11.5% YoY, supporting recurring revenue strength.",
+          "claim": "Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
           "citation_id": "E1"
         },
         {
-          "claim": "Services gross margin remained high at 74.1%, supporting profitability quality.",
+          "claim": "Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
           "citation_id": "E2"
         },
         {
-          "claim": "The $110B buyback authorization supports shareholder return.",
-          "citation_id": "E4"
-        },
-        {
-          "claim": "Apple Intelligence adoption may support future device engagement, but current evidence does not yet prove a significant iPhone demand boost.",
-          "citation_id": "E5"
-        }
-      ],
-      "key_assumptions": [
-        "Services growth remains stable.",
-        "Apple Intelligence adoption may support engagement, but demand impact requires further evidence."
-      ],
-      "confidence": 0.68,
-      "revision_note": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim."
-    },
-    "bear_case": {
-      "bear_thesis": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
-      "attack_points": [
-        {
-          "target_claim": "AAPL has a constructive medium-term setup.",
-          "critique": "Greater China revenue declined 8.3% YoY, which weakens the growth narrative.",
+          "claim": "Latest reported revenue value was $219.7B based on SEC concept RevenueFromContractWithCustomerExcludingAssessedTax (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
           "citation_id": "E3"
         },
         {
-          "target_claim": "Apple Intelligence adoption can support future device engagement.",
-          "critique": "Supply chain data still indicates FY26H2 iPhone shipment estimate down 5%, so adoption does not yet prove demand recovery.",
-          "citation_id": "E6"
+          "claim": "Latest reported net income value was $61.1B based on SEC concept NetIncomeLoss (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+          "citation_id": "E4"
+        }
+      ],
+      "key_assumptions": [
+        "Recent SEC filings and financial facts are relevant to the research case.",
+        "Market context should be interpreted alongside filing-grounded fundamentals."
+      ],
+      "confidence": 0.7
+    },
+    "bear_case": {
+      "bear_thesis": "The constructive case should be treated cautiously because the Evidence Pack is limited to fetched company, filing, financial, and market context.",
+      "attack_points": [
+        {
+          "target_claim": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
+          "critique": "This support depends on the scope and freshness of cited evidence: Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
+          "citation_id": "E1"
+        },
+        {
+          "target_claim": "Recent data is sufficient for a complete view.",
+          "critique": "Additional business, segment, and forward-looking context may be needed beyond: Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
+          "citation_id": "E2"
         }
       ],
       "missed_risks": [
         {
-          "risk": "AI feature adoption may not translate into near-term iPhone upgrades.",
-          "citation_id": "E6"
+          "risk": "Provider gaps, stale filings, or missing market data can limit confidence.",
+          "citation_id": "E8"
         }
       ],
-      "confidence": 0.78
+      "confidence": 0.72
     },
     "risk_flags": [
       {
-        "risk": "Greater China revenue declined 8.3% YoY, creating regional growth pressure.",
-        "severity": "high",
+        "risk": "Research interpretation depends on this evidence item: Apple Inc. maps to SEC CIK 0000320193 and trades on Nasdaq.",
+        "severity": "medium",
+        "citation_id": "E1"
+      },
+      {
+        "risk": "Research interpretation depends on this evidence item: Latest periodic SEC filing is 10-Q filed on 2026-05-01 for report date 2026-03-28.",
+        "severity": "medium",
+        "citation_id": "E2"
+      },
+      {
+        "risk": "Research interpretation depends on this evidence item: Latest reported revenue value was $219.7B based on SEC concept RevenueFromContractWithCustomerExcludingAssessedTax (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
+        "severity": "medium",
         "citation_id": "E3"
       },
       {
-        "risk": "FY26H2 iPhone shipment estimate is down 5%, suggesting device demand uncertainty.",
-        "severity": "high",
-        "citation_id": "E6"
-      },
-      {
-        "risk": "Apple Intelligence adoption may improve engagement, but current evidence does not prove near-term iPhone upgrade demand.",
+        "risk": "Research interpretation depends on this evidence item: Latest reported net income value was $61.1B based on SEC concept NetIncomeLoss (SEC FY/FP 2026/Q2, period end 2025-03-29, filed 2026-05-01).",
         "severity": "medium",
-        "citation_id": "E5"
+        "citation_id": "E4"
       }
     ],
     "evaluation_summary": {
@@ -711,10 +713,8 @@
       "confidence_calibration": "well_calibrated",
       "revision_reasons": [],
       "evaluation_notes": [
-        "BearAgent addressed at least one Evidence Pack risk.",
-        "RiskAgent covered Greater China weakness.",
-        "RiskAgent covered iPhone shipment uncertainty.",
-        "RiskAgent covered AI adoption demand uncertainty.",
+        "BearAgent addressed cited Evidence Pack items.",
+        "RiskAgent covered 3 of 3 required evidence references.",
         "All evaluated claims include citation IDs."
       ]
     },

@@ -16,7 +16,7 @@ from ai_core.band_agents.common import (
 
 
 def build_response(msg):
-    case_state = load_dispatch_case_state()
+    case_state = load_dispatch_case_state(msg)
     evidence_pack = get_dispatch_evidence_pack(case_state)
     case_state["evidence_pack"] = evidence_pack
     bull_output = (

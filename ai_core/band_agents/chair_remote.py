@@ -1,9 +1,10 @@
 import os
 
 from ai_core.band_agents.common import (
-    DEFAULT_CASE_ID,
-    DEFAULT_TICKER,
     build_reply,
+    case_id_for_ticker,
+    extract_case_id,
+    extract_ticker,
     get_band_user_handle,
     get_incoming_text,
     main_for,
@@ -49,8 +50,16 @@ def get_chair_mode(msg) -> str:
     return os.getenv("BAND_CHAIR_MODE", "internal").lower()
 
 
-def build_internal_response() -> dict:
-    result = run_chair_workflow()
+def case_context_from_message(msg) -> tuple[str, str]:
+    text = get_incoming_text(msg)
+    ticker = extract_ticker(text)
+    case_id = extract_case_id(text) or case_id_for_ticker(ticker)
+    return case_id, ticker
+
+
+def build_internal_response(msg) -> dict:
+    case_id, ticker = case_context_from_message(msg)
+    result = run_chair_workflow(case_id=case_id, ticker=ticker)
     case_state = result["case_state"]
     final_memo = result["final_memo"]
     initial_eval = case_state["evaluation_output"]
@@ -76,8 +85,9 @@ Human review required. Reply @BandAlpha Chair approve to approve, or @BandAlpha 
     return build_reply(content, [get_band_user_handle()])
 
 
-def build_parallel_blind_response() -> dict:
-    case_state = create_or_reset_case(DEFAULT_CASE_ID, DEFAULT_TICKER)
+def build_parallel_blind_response(msg) -> dict:
+    case_id, ticker = case_context_from_message(msg)
+    case_state = create_or_reset_case(case_id, ticker)
     case_state["parallel_blind_review"] = True
     case_state["blind_review_status"] = "dispatched"
     case_state["status"] = "blind_review_dispatched"
@@ -121,8 +131,9 @@ instruction: independently analyze the Evidence Pack without seeing the other si
     )
 
 
-def build_dispatch_response() -> dict:
-    case_state = create_or_reset_case(DEFAULT_CASE_ID, DEFAULT_TICKER)
+def build_dispatch_response(msg) -> dict:
+    case_id, ticker = case_context_from_message(msg)
+    case_state = create_or_reset_case(case_id, ticker)
     case_state["status"] = "dispatch_started"
     case_state = persist_dispatch_step(
         case_state,
@@ -145,8 +156,9 @@ After completion, hand off to BullAgent with the evidence pack summary.
     return build_reply(content, [optional_env_handle("BAND_DATA_STEWARD_HANDLE")])
 
 
-def build_approval_response() -> dict:
-    case_state = approve_case(DEFAULT_CASE_ID)
+def build_approval_response(msg) -> dict:
+    case_id, _ticker = case_context_from_message(msg)
+    case_state = approve_case(case_id)
     content = f"""ChairAgent recorded human approval.
 
 Case ID: {case_state["case_id"]}
@@ -159,7 +171,8 @@ Audit events: {len(case_state.get("audit_log", []))}
 
 def build_revision_request_response(msg) -> dict:
     comment = get_incoming_text(msg).strip()
-    case_state = request_case_revision(DEFAULT_CASE_ID, comment=comment)
+    case_id, _ticker = case_context_from_message(msg)
+    case_state = request_case_revision(case_id, comment=comment)
     content = f"""ChairAgent recorded a human revision request.
 
 Case ID: {case_state["case_id"]}
@@ -180,18 +193,18 @@ def build_response(msg):
 
     if is_approval_message(text):
         print("[ChairAgent] mode selected: human_approval")
-        return build_approval_response()
+        return build_approval_response(msg)
 
     if is_parallel_blind_message(text):
         print("[ChairAgent] mode selected: parallel_blind")
-        return build_parallel_blind_response()
+        return build_parallel_blind_response(msg)
 
     if get_chair_mode(msg) == "dispatch":
         print("[ChairAgent] mode selected: dispatch")
-        return build_dispatch_response()
+        return build_dispatch_response(msg)
 
     print("[ChairAgent] mode selected: internal")
-    return build_internal_response()
+    return build_internal_response(msg)
 
 
 if __name__ == "__main__":

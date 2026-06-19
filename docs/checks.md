@@ -29,6 +29,8 @@ Evidence provider layer:
 
 ```bash
 python3 -m ai_core.check_evidence_builder
+python3 -m ai_core.check_evidence_hybrid
+python3 -m ai_core.check_real_data_workflow
 ```
 
 LLM fallback path:

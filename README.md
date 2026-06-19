@@ -71,7 +71,7 @@ Copy config template:
 cp agent_config.example.yaml agent_config.yaml
 ```
 
-Create a local `.env` with Band URLs, Band handles, and optional LLM provider keys. Do not commit secrets.
+Create a local `.env` with Band URLs, Band handles, `EVIDENCE_PROVIDER=hybrid`, `SEC_USER_AGENT`, and optional LLM provider keys. Do not commit secrets.
 
 Never commit:
 
@@ -90,6 +90,8 @@ python3 -m ai_core.check_chair_workflow
 python3 -m ai_core.check_human_approval
 python3 -m ai_core.check_parallel_blind_review
 python3 -m ai_core.check_evidence_builder
+python3 -m ai_core.check_evidence_hybrid
+python3 -m ai_core.check_real_data_workflow
 python3 -m ai_core.check_llm_fallback
 ```
 
@@ -107,8 +109,17 @@ python3 -m ai_core.check_llm_enabled
 
 ## Notes
 
-- Default data mode is deterministic `stub` evidence for stable demos.
+- Default data mode is `hybrid`: SEC EDGAR plus optional yfinance market data.
+- `stub` evidence remains available for stable regression checks.
 - Optional LLM mode is controlled by `USE_LLM_AGENTS=true`.
 - EvaluatorAgent remains rule-based for stable grounding checks.
 - Runtime case state is stored under `ai_core/cases/`.
 - Final memo disclaimer: `This is a research support memo, not investment advice.`
+
+Force deterministic stub mode when needed:
+
+```bash
+EVIDENCE_PROVIDER=stub python3 ai_core/run_demo.py
+```
+
+See [milestones](docs/milestones.md) for the project progress log.

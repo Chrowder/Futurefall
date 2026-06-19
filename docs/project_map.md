@@ -29,13 +29,22 @@ This repo keeps the hackathon demo intentionally small. Most files are plain Pyt
 - `ai_core/data_providers/evidence_builder.py`: Evidence Pack builder
 - `ai_core/data_providers/stub_provider.py`: stable deterministic provider
 - `ai_core/data_providers/yfinance_provider.py`: optional market snapshot provider
-- `ai_core/data_providers/sec_provider.py`: SEC provider placeholder
+- `ai_core/data_providers/sec_provider.py`: SEC EDGAR provider for ticker lookup, submissions, and companyfacts
 
-Default provider:
+Default runtime provider:
+
+```bash
+EVIDENCE_PROVIDER=hybrid
+SEC_USER_AGENT="Your Name your@email.com"
+```
+
+Stable regression provider:
 
 ```bash
 EVIDENCE_PROVIDER=stub
 ```
+
+`hybrid` uses SEC EDGAR as the primary auditable source and yfinance as an optional market snapshot source. SEC responses are cached under `ai_core/data_cache/`, which is ignored by git. The `stub` provider preserves the deterministic E1-E6 revision-loop fixture.
 
 ## LLM Clients
 
@@ -51,6 +60,7 @@ USE_LLM_AGENTS=false
 ## Runtime Artifacts
 
 - `ai_core/cases/*.json`: local generated case state, ignored by git
+- `ai_core/data_cache/`: local provider cache, ignored by git
 - `ai_core/demo_output.json`: exported frontend/demo payload
 - `ai_core/audit_report.json`: exported audit report
 

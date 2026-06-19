@@ -20,7 +20,7 @@ from ai_core.band_agents.common import (
 
 
 def build_response(msg):
-    case_state = load_dispatch_case_state()
+    case_state = load_dispatch_case_state(msg)
     evidence_pack = get_dispatch_evidence_pack(case_state)
     case_state["evidence_pack"] = evidence_pack
 
@@ -107,6 +107,9 @@ BearAgent please complete your independent blind first pass.
 
         content = f"""BullAgent generated Bull revision.
 
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
+
 Thesis:
 {revised_output["bull_thesis"]}
 
@@ -139,6 +142,9 @@ EvaluatorAgent please run the final evaluation on Bull v2.
     )
 
     content = f"""BullAgent generated Bull v1.
+
+Case ID: {case_state["case_id"]}
+Ticker: {case_state["ticker"]}
 
 Thesis:
 {bull_output["bull_thesis"]}

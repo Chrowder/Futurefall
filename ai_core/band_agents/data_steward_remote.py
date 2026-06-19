@@ -9,7 +9,7 @@ from ai_core.band_agents.common import (
 
 
 def build_response(msg):
-    case_state = load_dispatch_case_state()
+    case_state = load_dispatch_case_state(msg)
     evidence_pack = get_dispatch_evidence_pack(case_state)
     case_state["evidence_pack"] = evidence_pack
     case_state["status"] = "evidence_pack_ready"
@@ -19,7 +19,7 @@ def build_response(msg):
             "agent": "DataStewardAgent",
             "action": "evidence_pack_ready",
             "target_agent": "BullAgent",
-            "summary": "Prepared the mock Evidence Pack and handed off to BullAgent.",
+            "summary": "Prepared the Evidence Pack and handed off to BullAgent.",
             "evidence_refs": [
                 item["citation_id"] for item in evidence_pack["evidence_items"]
             ],
@@ -35,7 +35,7 @@ def build_response(msg):
         for item in evidence_items
     )
 
-    content = f"""DataStewardAgent prepared the mock Evidence Pack.
+    content = f"""DataStewardAgent prepared the Evidence Pack.
 
 Case: {case_state["case_id"]}
 Ticker: {case_state["ticker"]}

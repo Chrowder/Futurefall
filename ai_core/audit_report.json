@@ -11,7 +11,7 @@
   "bear_rebuttal": null,
   "audit_log": [
     {
-      "timestamp": "2026-06-19T03:04:51.367876+00:00",
+      "timestamp": "2026-06-19T05:26:03.098066+00:00",
       "agent": "ChairAgent",
       "action": "case_created",
       "target_agent": "DataStewardAgent",
@@ -19,89 +19,69 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-19T03:04:51.368376+00:00",
+      "timestamp": "2026-06-19T05:26:03.098930+00:00",
       "agent": "DataStewardAgent",
       "action": "evidence_pack_ready",
       "target_agent": "BullAgent",
-      "summary": "Prepared mock Evidence Pack with 6 items.",
+      "summary": "Prepared Evidence Pack with 8 items.",
       "evidence_refs": [
         "E1",
         "E2",
         "E3",
         "E4",
         "E5",
-        "E6"
+        "E6",
+        "E7",
+        "E8"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:51.378450+00:00",
+      "timestamp": "2026-06-19T05:26:03.099818+00:00",
       "agent": "BullAgent",
       "action": "bull_generated",
       "target_agent": "BearAgent",
-      "summary": "AAPL has a constructive medium-term setup supported by services growth, high-margin revenue mix, and shareholder returns.",
+      "summary": "Apple Inc. (AAPL) has a fact-based research setup supported by auditable company, filing, financial, and market evidence.",
       "evidence_refs": [
         "E1",
         "E2",
-        "E4",
-        "E5"
+        "E3",
+        "E4"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:51.383245+00:00",
+      "timestamp": "2026-06-19T05:26:03.100749+00:00",
       "agent": "BearAgent",
       "action": "bear_generated",
       "target_agent": "RiskAgent",
-      "summary": "The bull case is weakened by regional revenue pressure and uncertain device upgrade demand.",
+      "summary": "The constructive case should be treated cautiously because the Evidence Pack is limited to fetched company, filing, financial, and market context.",
       "evidence_refs": [
-        "E3",
-        "E6"
+        "E1",
+        "E2"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:51.387251+00:00",
+      "timestamp": "2026-06-19T05:26:03.101771+00:00",
       "agent": "RiskAgent",
       "action": "risk_generated",
       "target_agent": "EvaluatorAgent",
-      "summary": "The main risks are regional revenue weakness, uncertain device demand, and the possibility that AI feature adoption does not translate into near-term upgrades.",
-      "evidence_refs": [
-        "E3",
-        "E6",
-        "E5"
-      ]
-    },
-    {
-      "timestamp": "2026-06-19T03:04:51.388044+00:00",
-      "agent": "EvaluatorAgent",
-      "action": "evaluation_completed",
-      "target_agent": "BullAgent",
-      "summary": "Initial evaluation completed. Revision required: True.",
-      "evidence_refs": []
-    },
-    {
-      "timestamp": "2026-06-19T03:04:51.389190+00:00",
-      "agent": "EvaluatorAgent",
-      "action": "revision_requested",
-      "target_agent": "BullAgent",
-      "summary": "Evaluator requested a BullAgent revision for an unsupported demand claim.",
-      "evidence_refs": [
-        "E5"
-      ]
-    },
-    {
-      "timestamp": "2026-06-19T03:04:51.389990+00:00",
-      "agent": "BullAgent",
-      "action": "bull_revised",
-      "target_agent": "EvaluatorAgent",
-      "summary": "Revised based on Evaluator feedback: lowered confidence and softened unsupported demand claim.",
+      "summary": "Key risks are evidence freshness, provider coverage gaps, and the need to interpret filing-grounded facts alongside broader business context.",
       "evidence_refs": [
         "E1",
         "E2",
-        "E4",
-        "E5"
+        "E3",
+        "E4"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:51.390777+00:00",
+      "timestamp": "2026-06-19T05:26:03.102669+00:00",
+      "agent": "EvaluatorAgent",
+      "action": "evaluation_completed",
+      "target_agent": null,
+      "summary": "Initial evaluation completed. Revision required: False.",
+      "evidence_refs": []
+    },
+    {
+      "timestamp": "2026-06-19T05:26:03.103503+00:00",
       "agent": "EvaluatorAgent",
       "action": "final_evaluation_completed",
       "target_agent": "MemoAgent",
@@ -109,22 +89,24 @@
       "evidence_refs": []
     },
     {
-      "timestamp": "2026-06-19T03:04:51.395115+00:00",
+      "timestamp": "2026-06-19T05:26:03.104650+00:00",
       "agent": "MemoAgent",
       "action": "memo_generated",
       "target_agent": "HumanReviewer",
-      "summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
+      "summary": "Apple Inc. (AAPL) has been reviewed using fetched company, filing, financial, and market evidence. The memo should be treated as research support because provider coverage, filing freshness, and missing auxiliary market data can affect confidence.",
       "evidence_refs": [
         "E1",
         "E2",
         "E3",
         "E4",
         "E5",
-        "E6"
+        "E6",
+        "E7",
+        "E8"
       ]
     },
     {
-      "timestamp": "2026-06-19T03:04:51.396455+00:00",
+      "timestamp": "2026-06-19T05:26:03.105773+00:00",
       "agent": "ChairAgent",
       "action": "human_review_pending",
       "target_agent": "HumanReviewer",
@@ -135,37 +117,27 @@
         "E3",
         "E4",
         "E5",
-        "E6"
+        "E6",
+        "E7",
+        "E8"
       ]
     }
   ],
   "initial_evaluation": {
-    "faithfulness_score": 0.82,
+    "faithfulness_score": 0.92,
     "citation_coverage": 1.0,
-    "unsupported_claims": [
-      {
-        "source_agent": "BullAgent",
-        "claim": "Apple Intelligence adoption will significantly boost iPhone demand.",
-        "reason": "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
-        "required_action": "Lower confidence or rewrite with more cautious wording."
-      }
-    ],
-    "hallucination_risk": "medium",
-    "revision_required": true,
-    "target_agent": "BullAgent",
+    "unsupported_claims": [],
+    "hallucination_risk": "low",
+    "revision_required": false,
+    "target_agent": null,
     "risk_coverage_score": 1.0,
-    "confidence_calibration": "overconfident",
+    "confidence_calibration": "well_calibrated",
     "evaluation_notes": [
-      "BearAgent addressed at least one Evidence Pack risk.",
-      "RiskAgent covered Greater China weakness.",
-      "RiskAgent covered iPhone shipment uncertainty.",
-      "RiskAgent covered AI adoption demand uncertainty.",
+      "BearAgent addressed cited Evidence Pack items.",
+      "RiskAgent covered 3 of 3 required evidence references.",
       "All evaluated claims include citation IDs."
     ],
-    "revision_reasons": [
-      "Evidence supports Apple Intelligence adoption rate, but does not directly prove future iPhone demand growth.",
-      "BullAgent confidence is too high for an unsupported causal claim."
-    ]
+    "revision_reasons": []
   },
   "final_evaluation": {
     "faithfulness_score": 0.92,
@@ -177,16 +149,14 @@
     "risk_coverage_score": 1.0,
     "confidence_calibration": "well_calibrated",
     "evaluation_notes": [
-      "BearAgent addressed at least one Evidence Pack risk.",
-      "RiskAgent covered Greater China weakness.",
-      "RiskAgent covered iPhone shipment uncertainty.",
-      "RiskAgent covered AI adoption demand uncertainty.",
+      "BearAgent addressed cited Evidence Pack items.",
+      "RiskAgent covered 3 of 3 required evidence references.",
       "All evaluated claims include citation IDs."
     ],
     "revision_reasons": []
   },
-  "final_memo_summary": "AAPL shows a balanced research profile. The bull case is supported by services growth, high services margin, and shareholder returns. However, the bear and risk agents highlight regional weakness, iPhone shipment uncertainty, and limited evidence that AI adoption directly drives near-term demand.",
-  "revision_required_initial": true,
+  "final_memo_summary": "Apple Inc. (AAPL) has been reviewed using fetched company, filing, financial, and market evidence. The memo should be treated as research support because provider coverage, filing freshness, and missing auxiliary market data can affect confidence.",
+  "revision_required_initial": false,
   "revision_required_final": false,
   "disclaimer": "This is a research support memo, not investment advice."
 }

@@ -105,7 +105,7 @@ Approval sets `human_status` to `approved`. A revision request sets `human_statu
 
 ## Audit Report
 
-Export the current mock case audit report with:
+Export the current case audit report with:
 
 ```bash
 python -m ai_core.export_audit_report
@@ -115,10 +115,12 @@ This writes `ai_core/audit_report.json` with workflow status, human status, audi
 
 ## Evidence Providers
 
-The default Evidence Pack is built through the provider layer with deterministic stub data:
+The default Evidence Pack is built through the provider layer with `hybrid` data:
 
 ```bash
 python -m ai_core.check_evidence_builder
+python -m ai_core.check_evidence_hybrid
+python -m ai_core.check_real_data_workflow
 ```
 
 Local code can build a pack directly:
@@ -126,10 +128,10 @@ Local code can build a pack directly:
 ```python
 from ai_core.data_providers.evidence_builder import build_evidence_pack
 
-evidence_pack = build_evidence_pack(ticker="AAPL", provider="stub")
+evidence_pack = build_evidence_pack(ticker="AAPL", provider="hybrid")
 ```
 
-`EVIDENCE_PROVIDER=stub` keeps the demo stable. Optional provider hooks exist for `yfinance` and `sec`, but the deterministic agents and evaluator are calibrated against the stub E1-E6 Evidence Pack.
+`EVIDENCE_PROVIDER=hybrid` uses SEC EDGAR as the primary source and optional yfinance market data when installed. `EVIDENCE_PROVIDER=stub` remains available for deterministic regression checks that exercise the original E1-E6 revision loop.
 
 ## Optional LLM Mode
 

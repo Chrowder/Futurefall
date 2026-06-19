@@ -20,7 +20,7 @@ from ai_core.schemas import AgentMessage, CaseState
 def create_initial_case_state(
     evidence_pack: Optional[Dict[str, Any]] = None,
     ticker: str = "AAPL",
-    provider: str = "stub",
+    provider: str = "env",
 ) -> CaseState:
     if evidence_pack is None:
         evidence_pack = build_evidence_pack(ticker=ticker, provider=provider)
@@ -138,7 +138,7 @@ def handle_band_message(
 
 def run_full_research_case() -> Dict[str, Any]:
     room = MockBandRoom("local-bandalpha-demo")
-    evidence_pack = build_evidence_pack(provider="stub")
+    evidence_pack = build_evidence_pack(provider="env")
     case_state = create_initial_case_state(evidence_pack)
 
     room.send_message(
@@ -227,7 +227,7 @@ def run_chair_workflow(case_id: str = "AAPL-001", ticker: str = "AAPL") -> Dict[
             "agent": "DataStewardAgent",
             "action": "evidence_pack_ready",
             "target_agent": "BullAgent",
-            "summary": f"Prepared mock Evidence Pack with {len(evidence_refs)} items.",
+            "summary": f"Prepared Evidence Pack with {len(evidence_refs)} items.",
             "evidence_refs": evidence_refs,
         },
     )
